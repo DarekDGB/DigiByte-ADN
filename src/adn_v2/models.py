@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 
-class RiskLevel(str, Enum):
+class RiskState(str, Enum):
     NORMAL = "NORMAL"
     ELEVATED = "ELEVATED"
     HIGH = "HIGH"
@@ -15,61 +15,76 @@ class RiskLevel(str, Enum):
 @dataclass
 class SentinelSignal:
     """
-    Normalised signal coming from Sentinel AI v2.
+    Normalised output from Sentinel AI v2.
 
-    risk_score: 0.0 – 1.0
-    level: mapped RiskLevel based on Sentinel's internal logic
+    risk_score: 0.0 – 1.0 inclusive
+    details: free-form metadata (triggers, metrics, etc.)
     """
 
+    risk_state: RiskState
     risk_score: float
-    level: RiskLevel
-    details: Dict[str, float]
+    details: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
-class GuardianSignal:
+class WalletSignal:
     """
-    Aggregated view from Wallet Guardian.
+    Aggregated input from Wallet Guardian (Layer 4).
 
-    wallet_id can be a pseudo-ID, not a real address (privacy-friendly).
+    aggregated_state: worst-case state across all participating wallets.
+    wallet_ids: list of wallet identifiers contributing to this state.
     """
 
-    wallet_id: str
-    level: RiskLevel
-    reasons: List[str]
+    aggregated_state: RiskState
+    wallet_ids: List[str] = field(default_factory=list)
+    details: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
-class ChainSnapshot:
+class ChainTelemetry:
     """
-    Lightweight view of current chain / node health.
+    Lightweight snapshot of chain-level metrics used by ADN v2.
 
-    This replaces a full node object and keeps ADN decoupled.
+    This is intentionally minimal and implementation-agnostic.
     """
 
-    best_height: int
-    reorg_depth: int
+    height: int
+    difficulty: float
     mempool_size: int
-    orphan_rate: float
-    peer_count: int
+    avg_block_interval_sec: float
+    reorg_depth: int = 0
+    extra: Dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
-class DefenseDecision:
+class PolicyDecision:
     """
-    The final decision that ADN v2 hands to the node / infra layer.
+    Result of the policy engine before turning into concrete actions.
     """
 
-    final_level: RiskLevel
-    combined_risk: float
+    effective_state: RiskState
+    hardened_mode: bool = False
+    pqc_enforced: bool = False
+    peer_filtering: bool = False
+    fee_multiplier: float = 1.0
+    notes: str = ""
 
-    # Actions (all optional flags – actual implementation is outside ADN v2)
-    activate_hardened_mode: bool = False
-    enforce_pqc: bool = False
-    tighten_peer_policy: bool = False
-    delay_new_txs: bool = False
-    broadcast_warning: bool = False
 
-    # For logs / dashboards
-    rationale: str = ""
-    tags: Optional[List[str]] = None
+@dataclass
+class ActionPlan:
+    """
+    Machine-readable instruction set that node software can consume.
+
+    All actions are expressed as data. ADN v2 does not directly
+    modify DigiByte Core – it emits a plan that integrators apply.
+    """
+
+    decision: PolicyDecision
+    # Example actions – integrators can extend this structure.
+    set_min_fee_rate: Optional[float] = None
+    enable_pqc: bool = False
+    enable_hardened_mode: bool = False
+    drop_peers: List[str] = field(default_factory=list)
+    prefer_peers: List[str] = field(default_factory=list)
+    broadcast_advisory: Optional[str] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
