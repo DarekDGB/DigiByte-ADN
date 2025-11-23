@@ -1,42 +1,40 @@
-from __future__ import annotations
+"""
+ADN v2 – Configuration Module
+Central configuration for thresholds, modes and network parameters.
+"""
 
-from dataclasses import dataclass
-from typing import Any, Dict
+ADN_VERSION = "2.0.0"
 
+# --- RISK THRESHOLDS -------------------------------------------------------
 
-@dataclass
-class ADNConfig:
-    """
-    Configuration for ADN v2 behaviour.
+BASELINE_THRESHOLDS = {
+    "low": 0.25,        # harmless anomalies
+    "elevated": 0.45,   # unusual behaviour
+    "high": 0.70,       # requires human confirmation
+    "critical": 0.90    # automatic defensive action
+}
 
-    These defaults are intentionally conservative and can be tuned by
-    DigiByte Core devs, exchanges, miners or Sentinel operators.
-    """
+# --- HARDENED MODE PARAMETERS ----------------------------------------------
 
-    normal_fee_multiplier: float = 1.0
-    elevated_fee_multiplier: float = 1.2
-    high_fee_multiplier: float = 1.5
-    critical_fee_multiplier: float = 2.0
+HARDENED_MODE = {
+    "enabled": True,
+    "min_peer_score": 0.65,          # drop peers below this trust score
+    "max_reorg_depth": 2,           # reject reorgs deeper than 2 blocks
+    "fee_multiplier": 1.5,          # temporary fee boost for spam defence
+}
 
-    enable_pqc_on_high: bool = True
-    enable_pqc_on_critical: bool = True
+# --- TELEMETRY --------------------------------------------------------------
 
-    enable_hardened_on_high: bool = True
-    enable_hardened_on_critical: bool = True
+TELEMETRY = {
+    "enabled": True,
+    "remote_endpoint": "https://defense.dgb/adn-telemetry",
+    "interval_seconds": 30,
+}
 
-    global_lock_on_critical: bool = True
+# --- POLICY ENGINE ----------------------------------------------------------
 
-    # Risk-score thresholds coming from Sentinel AI v2 + Wallet Guardian
-    elevated_threshold: float = 0.35
-    high_threshold: float = 0.65
-    critical_threshold: float = 0.85
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ADNConfig":
-        """
-        Lightweight helper for loading from parsed YAML/JSON.
-        Unknown keys are ignored.
-        """
-        allowed = cls.__dataclass_fields__.keys()
-        filtered = {k: v for k, v in data.items() if k in allowed}
-        return cls(**filtered)
+POLICY = {
+    "reject_unknown_script": True,
+    "block_rbf_high_risk": True,
+    "freeze_unknown_peers": True,
+}
