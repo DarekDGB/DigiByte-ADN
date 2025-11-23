@@ -1,68 +1,38 @@
-# Autonomous Defense Node v2 (ADN v2) – Layer-3 Enforcement Engine for DigiByte
+# DigiByte Autonomous Defense Node v2 (ADN v2)
 
-**ADN v2** is the upgraded enforcement layer in DigiByte’s quantum‑resistant 4‑layer shield:
-
-> **DQSN → Sentinel AI v2 → ADN v2 → Wallet Guardian**
-
-Its mission is simple but critical:
-
-### **Take action when the chain is under threat.**
-ADN v2 receives risk signals from Sentinel AI v2, verifies them, and executes automated defensive responses to protect the DigiByte network in real time.
+**ADN v2** is the upgraded Layer‑3 autonomous protection engine of DigiByte’s 5‑Layer Quantum Shield.  
+It operates between Sentinel AI v2 (detection) and Wallet Guardian (local wallet defence), executing **real‑time actions**, enforcing **policy rules**, and communicating with **DQSN** to maintain chain integrity.
 
 ---
 
-## 🚀 Key Responsibilities
-
-### **1. Threat Validation Layer**
-ADN v2 double‑checks Sentinel’s risk state before taking action:
-- verifies entropy drops
-- confirms mempool anomalies
-- checks peer behaviour patterns
-- validates timestamp & difficulty manipulation signals
-- rejects false positives & poisoned signals
-
-### **2. Automated Chain Protection**
-When a verified risk is detected, ADN v2 can activate:
-- **Hardened Mode** (strict block validation)
-- **Emergency Fee Mode** (anti‑spam)
-- **Peer Eviction** (malicious peers removed)
-- **Block Freeze Window** (during deep reorg threats)
-- **PQC Activation** (post‑quantum signing paths)
-
-### **3. Privacy‑Safe Wallet Coordination**
-ADN v2 communicates with:
-- **Wallet Guardian** (Layer‑4 wallet protection)
-
-Using minimal, anonymous flags:
-- CRITICAL → freeze signing
-- HIGH → require additional confirmation
-- ELEVATED → show warnings
-
-### **4. Self‑Audit & Tamper Detection**
-- signed configuration files
-- hashed rule sets
-- integrity check at startup
-- threat replay protection
-- adversarial drift‑proof logic
-
----
-
-## 🧠 How It Works
-
-**Sentinel AI v2 → ADN v2 → Node Actions**
-
-1. Sentinel AI v2 evaluates network telemetry  
-2. It produces a risk state (NORMAL → CRITICAL)  
-3. ADN v2 verifies the threat using deterministic rules  
-4. If valid, ADN v2 activates the appropriate response  
-
-This keeps DigiByte running even under:
-- rented hashrate attacks  
+## 🚀 Mission  
+To provide DigiByte with a **fully automated defence layer** capable of responding instantly to:
+- quantum‑related key extraction attempts  
+- deep reorganisations  
 - timestamp manipulation  
-- Sybil clustering  
-- mempool floods  
-- quantum‑assisted key extraction  
-- deep reorg attempts  
+- sudden spikes in mempool entropy  
+- coordinated multi‑node attacks  
+- hostile or suspicious node behaviour  
+- abnormal propagation patterns  
+
+---
+
+## 🧩 Layers Working Together  
+ADN v2 is part of the 5‑Layer Quantum Shield:
+
+```
+DGB Core
+   ▲
+Wallet Guardian (Layer 5)
+   ▲
+ADN v2 – Autonomous Defense Node (Layer 4)
+   ▲
+DQSN – Quantum Shield Network (Layer 3)
+   ▲
+Sentinel AI v2 – Detection Engine (Layer 2)
+   ▲
+Node / Chain Observability (Layer 1)
+```
 
 ---
 
@@ -70,49 +40,157 @@ This keeps DigiByte running even under:
 
 ```
 DigiByte-ADN-v2/
-├─ README.md
-├─ LICENSE
-├─ src/
-│  └─ dgb_adn_v2/
-│     ├─ __init__.py
-│     ├─ config.py
-│     ├─ policy_engine.py
-│     ├─ validator.py
-│     ├─ action_engine.py
-│     ├─ api.py
-│     └─ main.py
-└─ docs/
-   ├─ technical-spec-adn-v2.md
-   └─ adn-v2-whitepaper.md
+│
+├── README.md
+├── LICENSE
+│
+├── src/
+│   └── adn_v2/
+│       ├── __init__.py
+│       ├── actions.py
+│       ├── cli.py
+│       ├── client.py
+│       ├── config.py
+│       ├── engine.py
+│       ├── main.py
+│       ├── models.py
+│       ├── policy.py
+│       ├── server.py
+│       └── telemetry.py
+│
+└── docs/
+    ├── technical-spec.md
+    └── whitepaper-adn-v2.md
 ```
 
 ---
 
-## 🛠 Early Milestone (v0.1)
+## 🔥 Core Components (What Each File Does)
 
-- baseline policy engine  
-- risk state validation  
-- hardened mode activation  
-- basic peer filtering  
-- fee escalation logic  
-- API for Sentinel v2 + Wallet Guardian testing  
+### **`engine.py`**
+Central brain of ADN v2.  
+It merges:
+- live telemetry  
+- validator results  
+- risk states  
+- actions  
+- configuration  
+
+### **`policy.py`**
+Defines all enforcement behaviour:
+- thresholds  
+- cooldown rules  
+- escalation rules  
+- hardened‑mode logic  
+
+### **`actions.py`**
+Executes automated responses:
+- slow down block processing  
+- lock RPC  
+- isolate node  
+- broadcast anomaly packets  
+- notify DQSN  
+
+### **`telemetry.py`**
+Ingests real‑time metrics from:
+- mempool  
+- block templates  
+- peer list  
+- difficulty  
+- network entropy  
+
+### **`validator.py`**
+Runs checks:
+- reorg depth  
+- timestamp drift  
+- quantum signature anomalies  
+- entropy collapses  
+
+### **`client.py`**
+Outbound messaging:
+- ADN → Sentinel AI  
+- ADN → DQSN  
+
+### **`server.py`**
+Inbound server:
+- receives signals from other ADN nodes  
+- receives warnings from DQSN  
+
+### **`cli.py`**
+Local command‑line interface for:
+- checking risk  
+- forcing hardened mode  
+- exporting logs  
 
 ---
 
-## 📜 License (MIT)
+## 🛡️ ADN v2 Modes
 
-```
-MIT License
+### **Normal**
+Everything behaves normally  
+→ monitoring active
 
-Copyright (c) 2025 
-Darek (@Darek_DGB)
-```
+### **Elevated**
+Minor anomalies  
+→ warnings, additional validation
+
+### **High**
+Confirmed suspicious behaviour  
+→ multi‑step confirmation, optional RPC lockdown
+
+### **Critical**
+High confidence of attack  
+→  
+- hard‑lock wallet  
+- freeze block signing  
+- isolate node  
+- notify DQSN  
+- force hardened mode
 
 ---
 
-## 🌟 Vision
+## 📜 Early Milestone v0.1 (Completed)
+- ✔ baseline policy engine  
+- ✔ risk state tracking  
+- ✔ hardened mode  
+- ✔ basic anomaly validators  
+- ✔ telemetry ingestion  
+- ✔ ADN CLI  
+- ✔ inter-node signalling  
+- ✔ full repo structure  
 
-With ADN v2, DigiByte becomes a **self‑defending blockchain**, able to adapt, resist, and respond to both classical and quantum‑era attacks.
+---
 
-This is the next evolution of decentralized security.
+## 🗺️ Roadmap (Vision)
+### **v0.2 – Full Network Behaviour Model**
+- predictive risk scoring  
+- behaviour fingerprinting  
+- node reputation map  
 
+### **v0.3 – Clustered ADN Mesh**
+- multiple ADN nodes forming a mesh  
+- shared risk packets  
+- distributed validation  
+
+### **v1.0 – Production‑Ready ADN**
+- plug‑and‑play deployment  
+- GUI dashboard  
+- integration with Wallet Guardian  
+- integration with Sentinel AI v2 & DQSN  
+
+---
+
+## 🤝 Open‑Source & Community  
+This project is open-source under the MIT license.  
+It is built for DigiByte, its community, and future generations.
+
+If you want to contribute, open an issue or PR.  
+Your help strengthens the network.
+
+---
+
+## ✨ Vision  
+ADN v2 is part of something bigger:  
+a **self‑protecting blockchain** where nodes cooperate using machine intelligence to keep DigiByte secure against future threats—including quantum computing.
+
+This is only the beginning.
