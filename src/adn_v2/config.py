@@ -1,53 +1,42 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import List
-
-
-@dataclass
-class PQCOptions:
-    """Configuration for post-quantum defense behaviour."""
-
-    enable_pqc_switch: bool = True
-    preferred_algorithms: List[str] = field(
-        default_factory=lambda: ["XMSS", "SPHINCS+", "Dilithium"]
-    )
-    # How aggressively to push PQC even on weak signals
-    sensitivity: float = 0.7  # 0.0–1.0
-
-
-@dataclass
-class HardenedModeOptions:
-    """Settings for 'hardened mode' during HIGH/CRITICAL risk."""
-
-    min_confirmations: int = 18
-    fee_multiplier: float = 3.0
-    block_relay_restriction: bool = True
-    disconnect_suspicious_peers: bool = True
+from dataclasses import dataclass
+from typing import Any, Dict
 
 
 @dataclass
 class ADNConfig:
-    """Top-level ADN v2 configuration object."""
-
-    network: str = "digibyte-mainnet"
-    # How deep a reorg we tolerate before auto-escalation
-    max_safe_reorg_depth: int = 6
-    # If Sentinel / Guardian disagree, how much we trust Sentinel
-    sentinel_weight: float = 0.65  # remainder goes to wallet signals
-    # When combined risk >= this, we enter hardened mode
-    hardened_threshold: float = 0.6
-    # When combined risk >= this, we trigger emergency PQC switch
-    pqc_threshold: float = 0.85
-
-    pqc: PQCOptions = field(default_factory=PQCOptions)
-    hardened: HardenedModeOptions = field(default_factory=HardenedModeOptions)
-
-
-def load_default_config() -> ADNConfig:
     """
-    Convenience helper for simple setups.
+    Configuration for ADN v2 behaviour.
 
-    In a real node this would load from `adn_v2.yaml` or similar.
+    These defaults are intentionally conservative and can be tuned by
+    DigiByte Core devs, exchanges, miners or Sentinel operators.
     """
-    return ADNConfig()
+
+    normal_fee_multiplier: float = 1.0
+    elevated_fee_multiplier: float = 1.2
+    high_fee_multiplier: float = 1.5
+    critical_fee_multiplier: float = 2.0
+
+    enable_pqc_on_high: bool = True
+    enable_pqc_on_critical: bool = True
+
+    enable_hardened_on_high: bool = True
+    enable_hardened_on_critical: bool = True
+
+    global_lock_on_critical: bool = True
+
+    # Risk-score thresholds coming from Sentinel AI v2 + Wallet Guardian
+    elevated_threshold: float = 0.35
+    high_threshold: float = 0.65
+    critical_threshold: float = 0.85
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "ADNConfig":
+        """
+        Lightweight helper for loading from parsed YAML/JSON.
+        Unknown keys are ignored.
+        """
+        allowed = cls.__dataclass_fields__.keys()
+        filtered = {k: v for k, v in data.items() if k in allowed}
+        return cls(**filtered)
