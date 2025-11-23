@@ -2,52 +2,50 @@ from __future__ import annotations
 
 import argparse
 import json
-from typing import List
+import sys
+from typing import Any, Dict
 
 from .client import ADNClient
-from .models import ChainSnapshot, SentinelSignal, GuardianSignal, RiskLevel
+from .config import ADNConfig
 
 
-def main(argv: List[str] | None = None) -> int:
+def _parse_json_arg(value: str) -> Dict[str, Any]:
+    try:
+        return json.loads(value)
+    except json.JSONDecodeError as exc:
+        raise argparse.ArgumentTypeError(f"Invalid JSON: {exc}") from exc
+
+
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="adn-v2",
-        description="Reference CLI for the DigiByte Autonomous Defense Node v2",
+        description="ADN v2 reference CLI – evaluate risk and actions.",
     )
     parser.add_argument(
-        "--input",
-        help="Path to a JSON file with chain/sentinel/guardian demo data",
+        "--chain",
+        type=_parse_json_arg,
+        required=True,
+        help="JSON dict with chain metrics.",
+    )
+    parser.add_argument(
+        "--sentinel",
+        type=_parse_json_arg,
+        required=True,
+        help="JSON dict with Sentinel AI v2 output.",
+    )
+    parser.add_argument(
+        "--wallet",
+        type=_parse_json_arg,
         required=False,
+        help="Optional JSON dict with Wallet Guardian aggregate signal.",
     )
 
     args = parser.parse_args(argv)
 
-    # Very simple demo wiring
-    if not args.input:
-        print("ADN v2 CLI skeleton – no input provided.")
-        return 0
+    client = ADNClient(config=ADNConfig())
+    plan = client.evaluate(args.chain, args.sentinel, args.wallet)
 
-    with open(args.input, "r", encoding="utf-8") as f:
-        payload = json.load(f)
-
-    chain = ChainSnapshot(**payload["chain"])
-    sentinel = SentinelSignal(
-        risk_score=payload["sentinel"]["risk_score"],
-        level=RiskLevel(payload["sentinel"]["level"]),
-        details=payload["sentinel"]["details"],
-    )
-    guardians = [
-        GuardianSignal(
-            wallet_id=g["wallet_id"],
-            level=RiskLevel(g["level"]),
-            reasons=g["reasons"],
-        )
-        for g in payload.get("guardians", [])
-    ]
-
-    client = ADNClient()
-    decision = client.evaluate(chain, sentinel, guardians)
-    print("Final decision:", decision)
-
+    json.dump(plan, sys.stdout, default=lambda o: o.value if hasattr(o, "value") else o)
+    sys.stdout.write("\n")
     return 0
 
 
