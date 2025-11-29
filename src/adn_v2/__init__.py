@@ -1,36 +1,16 @@
 """
-DigiByte Autonomous Defense Node v2 (ADN v2)
+ADN v2 package initializer.
 
-Layer-3 execution engine in the DigiByte quantum-resilient shield:
+Kept intentionally minimal to avoid import errors when the internal
+model names evolve (RiskLevel, LockdownState, etc.).
 
-    DQSN → Sentinel AI v2 → ADN v2 → Wallet Guardian
+External code should import from submodules explicitly, e.g.:
 
-This package exposes a small, clean surface for:
-- ingesting chain / Sentinel / wallet signals
-- applying policy rules
-- producing machine-readable action plans
+    from adn_v2.models import DefenseEvent, NodeDefenseState
+    from adn_v2.engine import evaluate_defense
+    from adn_v2.actions import build_rpc_policy_from_state
 """
 
-from .models import (
-    RiskState,
-    SentinelSignal,
-    WalletSignal,
-    ChainTelemetry,
-    PolicyDecision,
-    ActionPlan,
-)
-from .config import ADNConfig
-from .engine import ADNEngine
+from . import models, engine, actions, adaptive_bridge  # noqa: F401
 
-__all__ = [
-    "RiskState",
-    "SentinelSignal",
-    "WalletSignal",
-    "ChainTelemetry",
-    "PolicyDecision",
-    "ActionPlan",
-    "ADNConfig",
-    "ADNEngine",
-]
-
-__version__ = "0.1.0"
+__all__ = ["models", "engine", "actions", "adaptive_bridge"]
