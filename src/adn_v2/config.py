@@ -38,3 +38,23 @@ POLICY = {
     "block_rbf_high_risk": True,
     "freeze_unknown_peers": True,
 }
+
+# --- v2 compatibility shim ----------------------------------------------------
+# Older parts of ADN v2 (e.g. validator) expect an ADNConfig object.
+# We provide a minimal, backwards-compatible version here so imports succeed.
+
+from dataclasses import dataclass
+
+
+@dataclass
+class ADNConfig:
+    """
+    Minimal configuration object for legacy validator / policy code.
+
+    Newer v2 defense logic uses NodeDefenseConfig from models.py instead,
+    but we keep this class so older integrations and tests still import
+    `ADNConfig` without errors.
+    """
+    enabled: bool = True
+    name: str = "default"
+    notes: str = ""
