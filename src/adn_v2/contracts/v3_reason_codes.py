@@ -18,3 +18,6 @@ class ReasonCode(str, Enum):
 
     # event-level schema hardening
     ADN_ERROR_EVENT_UNKNOWN_KEY = "ADN_ERROR_EVENT_UNKNOWN_KEY"
+
+    # oversize / abuse prevention
+    ADN_ERROR_OVERSIZE = "ADN_ERROR_OVERSIZE"
