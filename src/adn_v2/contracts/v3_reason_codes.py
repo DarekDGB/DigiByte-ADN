@@ -7,6 +7,9 @@ class ReasonCode(str, Enum):
     # success / neutral
     ADN_OK = "ADN_OK"
 
+    # indicates "valid request produced a defensive signal" (contract-facing, minimal)
+    ADN_V2_SIGNAL = "ADN_V2_SIGNAL"
+
     # fail-closed contract errors
     ADN_ERROR_INVALID_REQUEST = "ADN_ERROR_INVALID_REQUEST"
     ADN_ERROR_SCHEMA_VERSION = "ADN_ERROR_SCHEMA_VERSION"
