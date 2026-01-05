@@ -6,7 +6,15 @@ from .telemetry import TelemetryClient
 from .server import ADNServer
 
 
-class AutonomousDefenseNodeV2:
+class ADNv2:
+    """
+    Active Defense Network v2 (ADN v2)
+
+    Reference node-local defense orchestrator.
+    Coordinates telemetry ingestion, risk validation,
+    policy decisions, and action execution.
+    """
+
     def __init__(self):
         self.validator = RiskValidator(CONFIG)
         self.policy = PolicyEngine(CONFIG)
@@ -27,12 +35,12 @@ class AutonomousDefenseNodeV2:
         return {
             "state": state,
             "score": score,
-            "decision": decision
+            "decision": decision,
         }
 
 
 def main():
-    node = AutonomousDefenseNodeV2()
+    node = ADNv2()
     result = node.run()
     print("ADN v2 executed:", result)
 
