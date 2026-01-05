@@ -13,9 +13,9 @@ from .models import (
 RiskValidator – ADN v2 reference validator
 
 This module provides the minimal telemetry → risk translation used by
-the Autonomous Defense Node (ADN) pipeline.
+the ADN v2 pipeline.
 
-Projects depending on ADN v2 can subclass / replace this validator
+Projects depending on ADN v2 can subclass or replace this validator
 to implement more sophisticated threat scoring without modifying the
 core engine.
 """
