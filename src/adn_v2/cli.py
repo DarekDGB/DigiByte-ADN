@@ -11,7 +11,7 @@ from .engine import ADNEngine
 def _parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="adn-v2",
-        description="Autonomous Defense Node v2 (reference CLI)",
+        description="Active Defense Network v2 (ADN v2) — reference CLI",
     )
 
     sub = parser.add_subparsers(dest="command", required=True)
