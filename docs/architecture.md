@@ -1,9 +1,12 @@
-# DigiByte Autonomous Defense Node v2 (ADN v2)
+# DigiByte Active Defense Network v2 (ADN v2)
 ## Architecture & Flow
 
-> **Layer 3 – Autonomous Defense Node in the DigiByte Quantum Shield**  
+> **Layer 3 – Active Defense Network in the DigiByte Quantum Shield**  
 > Repository: `DigiByte-ADN-v2`  
-> Status: **v2 experimental, reference-only**
+> Status: **v2 experimental, reference-only**  
+>
+> **Legacy note:** In early drafts, ADN was sometimes expanded as “Autonomous Defense Node”.
+> The canonical and correct name is **Active Defense Network**.
 
 This document explains how ADN v2 is structured internally and how the main
 components work together to provide **local, automated defense** for DigiByte
