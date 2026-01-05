@@ -1,4 +1,7 @@
 # ⚔️ ADN v3 — Active Defence Network
+![ADN Tests](https://github.com/DarekDGB/DigiByte-ADN/actions/workflows/tests.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+
 ### *Deterministic Local Defence Engine • Policy → Decision → Local Enforcement*
 **Architecture by @DarekDGB — MIT Licensed**
 
@@ -12,7 +15,7 @@ Where:
 - **Sentinel AI v3** detects anomalies and produces structured threat signals  
 - **DQSN v3** validates, deduplicates, and transports those signals deterministically  
 
-**ADN v3** decides **what the local environment is allowed to do** — node wrapper, RPC gateway, or wallet runtime — using a strict, testable, fail‑closed flow.
+**ADN v3** decides **what the local environment is allowed to do** — node wrapper, RPC gateway, or wallet runtime — using a strict, testable, fail-closed flow.
 
 ADN does this by:
 - ingesting aggregated risk signals from DQSN  
@@ -20,7 +23,7 @@ ADN does this by:
 - producing deterministic **PolicyDecision** objects  
 - emitting **local enforcement intents** (lockdown states, RPC policies, advisory outputs)
 
-ADN is **consensus‑neutral**:
+ADN is **consensus-neutral**:
 - it does **not** modify DigiByte protocol rules  
 - it does **not** sign transactions  
 
@@ -76,7 +79,7 @@ ADN is the **decision authority** for local defence actions — not the source o
 ### ✓ Local enforcement intent
 - Map decisions into **NodeDefenseState**
 - Generate **RPC policy outputs** (throttle / restrict / annotate)
-- Emit structured defence events for upstream or user‑facing layers
+- Emit structured defence events for upstream or user-facing layers
 
 ### ✓ Modular policy engine
 - Validators, scoring logic, and enforcement mapping are modular
@@ -86,7 +89,7 @@ ADN is the **decision authority** for local defence actions — not the source o
 
 ## ✅ What “v3” means in this repository
 
-This repository is **DigiByte‑ADN**.
+This repository is **DigiByte-ADN**.
 
 The **v3 runtime is implemented inside the existing package layout** for backward compatibility:
 
@@ -152,7 +155,7 @@ Tests verify:
 - correct policy classification
 - stable enforcement outputs
 
-Fail‑closed behaviour is a **design invariant**.
+Fail-closed behaviour is a **design invariant**.
 
 ---
 
@@ -161,7 +164,7 @@ Fail‑closed behaviour is a **design invariant**.
 See `CONTRIBUTING.md`.
 
 Rules:
-- Do not introduce consensus‑touching behaviour
+- Do not introduce consensus-touching behaviour
 - Keep decisions deterministic
 - Enforcement outputs must be explicit and testable
 
