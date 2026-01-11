@@ -1,4 +1,4 @@
-from adn_v2.v3 import ADNv3
+from adn_v3 import ADNv3
 
 
 def test_v3_meta_latency_is_deterministic_zero():
