@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import time
 from typing import Any, Dict
 
 from .models import TelemetryPacket
@@ -13,54 +12,48 @@ Different execution environments (full nodes, lightweight nodes,
 Sentinel AI, DQSN gateways, test harnesses) expose different raw
 telemetry formats.
 
-TelemetryAdapter standardises them into a single
-TelemetryPacket object so that:
+TelemetryAdapter standardises them into a single TelemetryPacket.
 
-    • RiskValidator
-    • PolicyEngine
-    • ADNEngine
-
-all receive consistent, predictable input regardless of origin.
+Security/Determinism note:
+- We must NOT default missing timestamps to the current system time,
+  because that makes identical inputs produce different outputs.
+- If timestamp is missing or invalid, we default deterministically to 0.0.
 """
 
 
 class TelemetryAdapter:
-    """
-    Adapter layer between raw node telemetry and the internal ADN v2
-    TelemetryPacket model.
-
-    The adapter reads whatever keys are present in `raw` and extracts
-    the canonical metrics (height, mempool size, peer count, timestamp).
-    All remaining keys are preserved under `extra` to avoid losing
-    context — validators and advanced engines may use them later.
-    """
-
-    def from_raw(self, node_id: str, raw: Dict[str, Any]) -> TelemetryPacket:
+    def parse(self, raw: Dict[str, Any], node_id: str = "unknown") -> TelemetryPacket:
         """
-        Build a TelemetryPacket from a raw dictionary of metrics.
+        Convert a raw telemetry dict into a TelemetryPacket.
 
-        Callers can include arbitrary extra fields; anything that is not
-        explicitly mapped becomes part of the `extra` dictionary and is
-        still available to validators, anomaly detectors, or future v3+
-        modules.
-
-        Parameters
-        ----------
-        node_id : str
-            Identifier of the node emitting telemetry.
-        raw : dict
-            Raw telemetry payload coming from a node, gateway, or test.
-
-        Returns
-        -------
-        TelemetryPacket
+        Any missing/invalid numeric fields are coerced to safe defaults
+        deterministically (0 / 0.0). This keeps the adapter robust and
+        prevents non-deterministic behavior.
         """
+        if not isinstance(raw, dict):
+            raw = {}
+
+        def _to_int(x: Any, default: int = 0) -> int:
+            try:
+                return int(x)
+            except Exception:
+                return default
+
+        def _to_float(x: Any, default: float = 0.0) -> float:
+            try:
+                return float(x)
+            except Exception:
+                return default
+
+        ts_raw = raw.get("timestamp", 0.0)
+        ts = _to_float(ts_raw, 0.0)
+
         return TelemetryPacket(
-            node_id=node_id,
-            height=int(raw.get("height", 0)),
-            mempool_size=int(raw.get("mempool_size", 0)),
-            peer_count=int(raw.get("peer_count", 0)),
-            timestamp=float(raw.get("timestamp", time.time())),
+            node_id=str(node_id),
+            height=_to_int(raw.get("height", 0)),
+            mempool_size=_to_int(raw.get("mempool_size", 0)),
+            peer_count=_to_int(raw.get("peer_count", 0)),
+            timestamp=ts,
             extra={
                 k: v
                 for k, v in raw.items()
