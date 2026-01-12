@@ -8,8 +8,16 @@ from adn_v3.contracts.v3_reason_codes import ReasonCode
 
 
 def test_v3_types_contains_bad_number_good_float_path_is_false():
-    # This targets the likely last uncovered line: the "return False" in float branch.
+    # Covers float branch "good value" path
     assert v3_types._contains_bad_number(1.234) is False
+
+
+def test_v3_types_contains_bad_number_list_and_other_types_paths():
+    # Covers list recursion branch (safe values)
+    assert v3_types._contains_bad_number([1, 2, 3]) is False
+
+    # Covers final return False for non-float/non-dict/non-list
+    assert v3_types._contains_bad_number("safe") is False
 
 
 def test_v3_parse_events_accepts_metadata_none_and_still_not_error():
