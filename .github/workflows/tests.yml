@@ -42,4 +42,4 @@ jobs:
 
       - name: Run test suite (coverage gated on adn_v3)
         run: |
-          pytest --cov=adn_v3 --cov-fail-under=90 -q
+          pytest --cov=adn_v3 --cov-report=term-missing --cov-fail-under=90 -q
