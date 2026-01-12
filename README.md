@@ -1,33 +1,32 @@
 # ⚔️ ADN v3 — Active Defence Network
+
 ![ADN Tests](https://github.com/DarekDGB/DigiByte-ADN/actions/workflows/tests.yml/badge.svg)
+![Coverage ≥90%](https://img.shields.io/badge/coverage-%E2%89%A590%25-brightgreen)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
-### *Deterministic Local Defence Engine • Policy → Decision → Local Enforcement*
-**Architecture by @DarekDGB — MIT Licensed**
+### *Deterministic Local Defence Engine • Risk → Policy → Decision*
+**Architecture & Implementation by @DarekDGB — MIT Licensed**
 
 ---
 
 ## 🚀 Purpose
 
-**ADN v3 (Active Defence Network)** is the **deterministic local defence decision engine** of the DigiByte Quantum Shield.
+**ADN v3 (Active Defence Network)** is the **deterministic local defence decision engine**
+of the **DigiByte Quantum Shield**.
 
 Where:
-- **Sentinel AI v3** detects anomalies and produces structured threat signals  
-- **DQSN v3** validates, deduplicates, and transports those signals deterministically  
+- **Sentinel AI v3** detects anomalies and emits structured threat signals  
+- **DQSN v3** validates, deduplicates, and aggregates those signals deterministically  
 
-**ADN v3** decides **what the local environment is allowed to do** — node wrapper, RPC gateway, or wallet runtime — using a strict, testable, fail-closed flow.
+**ADN v3** is responsible for deciding **what a local environment is allowed to do**:
+node wrapper, RPC gateway, or wallet runtime.
 
-ADN does this by:
-- ingesting aggregated risk signals from DQSN  
-- evaluating them against explicit defence policies  
-- producing deterministic **PolicyDecision** objects  
-- emitting **local enforcement intents** (lockdown states, RPC policies, advisory outputs)
+It operates using a **strict, testable, fail-closed contract**.
 
-ADN is **consensus-neutral**:
-- it does **not** modify DigiByte protocol rules  
-- it does **not** sign transactions  
-
-It governs **local behaviour only**.
+ADN:
+- does **not** modify DigiByte consensus rules
+- does **not** sign transactions
+- governs **local behaviour only**
 
 ---
 
@@ -55,7 +54,7 @@ It governs **local behaviour only**.
                      │   (aggregated signals)
  ┌───────────────────────────────────────────────┐
  │               DQSN v3                         │
- │   Deterministic signal aggregation & transport│
+ │   Deterministic signal aggregation            │
  └───────────────────────────────────────────────┘
                      ▲
                      │   (raw threat signals)
@@ -65,46 +64,51 @@ It governs **local behaviour only**.
  └───────────────────────────────────────────────┘
 ```
 
-ADN is the **decision authority** for local defence actions — not the source of signals and not the executor of cryptography.
+ADN is the **decision authority** for local defence actions.
 
 ---
 
 ## 🎯 Core Mission (v3)
 
 ### ✓ Deterministic risk → decision
-- Convert aggregated signals into structured **RiskSignal** objects
-- Produce deterministic **PolicyDecision** outputs  
-  *(same inputs → same decisions)*
+- Convert aggregated signals into structured requests
+- Produce deterministic policy decisions  
+  *(same inputs → same outputs)*
+
+### ✓ Fail-closed by default
+- Unknown keys rejected
+- Invalid schema rejected
+- NaN / Infinity rejected anywhere
+- Oversized inputs rejected
+- Errors always explicit
 
 ### ✓ Local enforcement intent
-- Map decisions into **NodeDefenseState**
-- Generate **RPC policy outputs** (throttle / restrict / annotate)
-- Emit structured defence events for upstream or user-facing layers
-
-### ✓ Modular policy engine
-- Validators, scoring logic, and enforcement mapping are modular
-- Components can be swapped without changing the contract surface
+- Map decisions into `NodeDefenseState`
+- Emit lockdown / warning / allow decisions
+- Provide structured evidence without leaking internals
 
 ---
 
-## ✅ What “v3” means in this repository
+## 🧠 What “v3” means (important)
 
-This repository is **DigiByte-ADN**.
+**ADN v3 separates contract from behaviour.**
 
-The **v3 runtime is implemented inside the existing package layout** for backward compatibility:
+- `adn_v3` → **authoritative contract layer**
+- `adn_v2` → **legacy behaviour engine (still used)**
 
-- `src/adn_v2/v3.py` — v3 orchestration entry point  
-- `src/adn_v2/contracts/` — Shield Contract v3 primitives  
-  - `v3_types.py`
-  - `v3_reason_codes.py`
-  - `v3_hash.py`
+This ensures:
+- zero behaviour drift
+- deterministic contract surface
+- future-safe upgrades
 
-The folder name `adn_v2/` is **historical**.  
-The **logic and contracts implemented here are v3**, and documentation reflects that reality.
+Public import:
+```python
+from adn_v3 import ADNv3
+```
 
 ---
 
-## 🧩 Repository Layout (as it exists)
+## 🧩 Repository Layout (authoritative)
 
 ```
 DigiByte-ADN/
@@ -115,47 +119,38 @@ DigiByte-ADN/
 │  ├─ v2/                  # legacy reference docs
 │  └─ v3/                  # authoritative v3 docs
 └─ src/
-   └─ adn_v2/
-      ├─ __init__.py
-      ├─ actions.py
-      ├─ adaptive_bridge.py
-      ├─ cli.py
-      ├─ client.py
-      ├─ config.py
+   ├─ adn_v3/               # v3 contract (authoritative)
+   │  ├─ core.py
+   │  └─ contracts/
+   │     ├─ v3_types.py
+   │     ├─ v3_reason_codes.py
+   │     └─ v3_hash.py
+   └─ adn_v2/               # legacy behaviour engine
       ├─ engine.py
-      ├─ main.py
       ├─ models.py
-      ├─ policy.py
-      ├─ server.py
-      ├─ telemetry.py
-      ├─ validator.py
-      ├─ v3.py             # v3 runtime entry
-      └─ contracts/
-         ├─ __init__.py
-         ├─ v3_hash.py
-         ├─ v3_reason_codes.py
-         └─ v3_types.py
+      ├─ config.py
+      └─ v3.py              # deprecated shim → adn_v3
 ```
 
-The v3 contract surface is **explicit, isolated, and deterministic**.
+---
+
+## 🧪 Tests & Security Guarantees
+
+- CI enforces **≥90% coverage on `adn_v3`**
+- Determinism tested explicitly
+- Fail-closed behaviour tested on invalid inputs
+- Legacy code is *not* coverage-gated
+
+This ensures **contract safety without fake tests**.
 
 ---
 
 ## 📚 Documentation
 
-- **Authoritative v3 docs:** `docs/v3/INDEX.md` (start here)
-- **Legacy v2 docs:** `docs/v2/` (historical reference)
-
----
-
-## 🧪 Tests
-
-Tests verify:
-- deterministic behaviour under fixed inputs
-- correct policy classification
-- stable enforcement outputs
-
-Fail-closed behaviour is a **design invariant**.
+- **Start here:** `docs/v3/INDEX.md`
+- **Architecture:** `docs/v3/ARCHITECTURE.md`
+- **Contract:** `docs/v3/CONTRACT.md`
+- **Legacy reference:** `docs/v2/`
 
 ---
 
@@ -164,9 +159,10 @@ Fail-closed behaviour is a **design invariant**.
 See `CONTRIBUTING.md`.
 
 Rules:
-- Do not introduce consensus-touching behaviour
-- Keep decisions deterministic
-- Enforcement outputs must be explicit and testable
+- No consensus-touching behaviour
+- Deterministic decisions only
+- Explicit enforcement outputs
+- Tests required for contract changes
 
 ---
 
