@@ -1,13 +1,29 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from typing import Any, Callable, Dict, Optional
 
-from .decisions import Decision  # existing ADN enum
-
 
 ADN_LAYER_NAME = "ADN_v2"
+
+
+def _decision_to_str(decision: Any) -> str:
+    """
+    Convert a decision-like value to a string safely.
+
+    We intentionally do NOT import a missing `Decision` enum/module.
+    Supported inputs:
+    - Enum-like: has `.value`
+    - string
+    - anything else: str(x)
+    """
+    if hasattr(decision, "value"):
+        try:
+            return str(getattr(decision, "value"))
+        except Exception:
+            return str(decision)
+    return str(decision)
 
 
 @dataclass
@@ -17,6 +33,10 @@ class AdaptiveEvent:
 
     This structure is designed to be compatible with the
     DigiByte-Quantum-Adaptive-Core RiskEvent model.
+
+    Determinism note:
+    - `created_at` is wall-clock time (UTC). It is for observability/audit trails
+      and MUST NOT be used inside any deterministic contract hashing.
     """
 
     event_id: str
@@ -26,7 +46,7 @@ class AdaptiveEvent:
     severity: float
     created_at: datetime
     feedback: str = "unknown"
-    metadata: Dict[str, Any] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         d = asdict(self)
@@ -38,23 +58,25 @@ class AdaptiveEvent:
 def build_adaptive_event_from_adn(
     *,
     event_id: str,
-    decision: Decision,
+    decision: Any,
     severity: float,
     fingerprint: str,
     node_id: Optional[str] = None,
     reason: Optional[str] = None,
     extra_meta: Optional[Dict[str, Any]] = None,
+    created_at: Optional[datetime] = None,
 ) -> AdaptiveEvent:
     """
-    Create an AdaptiveEvent instance from an ADN v2 decision.
+    Create an AdaptiveEvent instance from an ADN decision.
 
     - event_id    – unique id in your system (tx id, internal uuid, etc.)
-    - decision    – ADN v2 Decision enum (ALLOW / WARN / DELAY / BLOCK / ...)
-    - severity    – numeric signal 0.0–1.0
+    - decision    – enum-like or string (converted to str safely)
+    - severity    – numeric signal 0.0–1.0 (clamped)
     - fingerprint – hash / identifier of the underlying situation
     - node_id     – optional identifier of this ADN node
     - reason      – optional human-readable reason from ADN engine
     - extra_meta  – any additional fields you want to send
+    - created_at  – optional override (useful for deterministic tests)
     """
     meta: Dict[str, Any] = {}
     if node_id is not None:
@@ -64,13 +86,16 @@ def build_adaptive_event_from_adn(
     if extra_meta:
         meta.update(extra_meta)
 
+    # Wall-clock timestamp for audit/trace only (not contract hashing)
+    ts = created_at or datetime.utcnow()
+
     return AdaptiveEvent(
-        event_id=event_id,
+        event_id=str(event_id),
         layer=ADN_LAYER_NAME,
-        decision=decision.value,
-        fingerprint=fingerprint,
+        decision=_decision_to_str(decision),
+        fingerprint=str(fingerprint),
         severity=max(0.0, min(1.0, float(severity))),
-        created_at=datetime.utcnow(),
+        created_at=ts,
         metadata=meta,
     )
 
@@ -86,12 +111,13 @@ def emit_adaptive_event(
     sink: Optional[AdaptiveSink],
     *,
     event_id: str,
-    decision: Decision,
+    decision: Any,
     severity: float,
     fingerprint: str,
     node_id: Optional[str] = None,
     reason: Optional[str] = None,
     extra_meta: Optional[Dict[str, Any]] = None,
+    created_at: Optional[datetime] = None,
 ) -> Optional[AdaptiveEvent]:
     """
     Convenience helper for ADN:
@@ -122,6 +148,7 @@ def emit_adaptive_event(
         node_id=node_id,
         reason=reason,
         extra_meta=extra_meta,
+        created_at=created_at,
     )
     sink(event)
     return event
