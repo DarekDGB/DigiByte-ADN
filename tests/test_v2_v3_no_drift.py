@@ -1,6 +1,6 @@
 from adn_v2.engine import evaluate_defense
 from adn_v2.models import DefenseEvent, NodeDefenseConfig, NodeDefenseState
-from adn_v2.v3 import ADNv3
+from adn_v3 import ADNv3
 
 
 def test_v2_v3_no_behavior_drift_minimal_events():
