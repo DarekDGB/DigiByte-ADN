@@ -127,4 +127,4 @@ src/adn_v2/
 ## 7. License
 
 MIT License  
-© 2026 DarekDGB
+© 2025 DarekDGB
