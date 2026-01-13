@@ -169,4 +169,4 @@ Rules:
 ## 📜 License
 
 MIT License  
-© 2026 **DarekDGB**
+© 2025 **DarekDGB**
