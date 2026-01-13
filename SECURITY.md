@@ -141,4 +141,4 @@ Use at your own risk.
 
 ---
 
-© 2026 DarekDGB
+© 2025 DarekDGB
