@@ -1,5 +1,5 @@
 # 🔐 ADN — Shield Contract v3
-**Component:** ADN (Active Defence Network)  
+**Component:** ADN (Active Defense Network)  
 **Contract Version:** 3  
 **Authoritative Package:** `adn_v3`
 
