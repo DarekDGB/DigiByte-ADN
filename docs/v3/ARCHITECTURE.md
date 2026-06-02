@@ -1,4 +1,4 @@
-# 🛡️ Active Defence Network (ADN) — Architecture v3
+# 🛡️ Active Defense Network (ADN) — Architecture v3
 ### Shield Contract v3 • Deterministic • Fail-Closed • Coverage-Gated
 
 ADN is the **local defence engine** in the DigiByte Quantum Shield stack.
