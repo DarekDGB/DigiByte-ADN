@@ -1,18 +1,18 @@
-# 🔐 Security Policy — DigiByte ADN (Active Defence Network)
+# 🔐 Security Policy — DigiByte ADN (Active Defense Network)
 
 **Repository:** DigiByte-ADN  
-**Component:** ADN v3 (Active Defence Network)  
+**Component:** ADN v3 (Active Defense Network)  
 **Maintainer:** DarekDGB  
 **License:** MIT
 
 This document defines the **security policy and disclosure process** for the
-DigiByte Active Defence Network (ADN), with a focus on the **v3 Shield Contract**.
+DigiByte Active Defense Network (ADN), with a focus on the **v3 Shield Contract**.
 
 ---
 
 ## 🛡️ Security Model Overview
 
-ADN v3 is a **deterministic, fail-closed local defence decision engine**.
+ADN v3 is a **deterministic, fail-closed local defense decision engine**.
 
 Security is enforced through:
 - strict input validation
@@ -58,7 +58,7 @@ The following invariants must never be violated:
    All error paths must be explicit and test-covered.
 
 5. **Coverage-Gated Contract Surface**  
-   - `adn_v3` is coverage-gated (≥90%)
+   - `adn_v3` is coverage-gated at 100%
    - legacy `adn_v2` is not coverage-gated
 
 ---
@@ -83,7 +83,7 @@ Security guarantees are enforced via:
   - fail-closed behaviour
   - deterministic hashing
   - oversize / malformed input handling
-- CI enforcement of coverage on `adn_v3`
+- CI enforcement of 100% coverage on `adn_v3`
 - Regression tests preventing behavior drift
 
 Security-sensitive changes **must include tests**.
