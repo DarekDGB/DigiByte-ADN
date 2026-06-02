@@ -1,4 +1,4 @@
-# ⚔️ ADN v3 — Active Defence Network
+# ⚔️ ADN v3.1.0 — Active Defense Network
 
 ![ADN Tests](https://github.com/DarekDGB/DigiByte-ADN/actions/workflows/tests.yml/badge.svg)
 ![Coverage 100%](https://img.shields.io/badge/coverage-100%25-brightgreen)
@@ -11,7 +11,7 @@
 
 ## 🚀 Purpose
 
-**ADN v3 (Active Defence Network)** is the **deterministic local defence decision engine**
+**ADN v3.1.0 (Active Defense Network)** is the **deterministic local defense decision engine**
 of the **DigiByte Quantum Shield**.
 
 Where:
@@ -150,7 +150,18 @@ DigiByte-ADN/
 
 This ensures **contract safety without fake tests or uncovered v3 branches**.
 
-### v3.0.0 CI Proof
+### v3.1.0 hardening status
+
+ADN is aligned with the Shield v3.1.0 hardening track:
+
+- package metadata set to `3.1.0`
+- Active Defense Network naming corrected
+- `adn_v3` remains coverage-gated at 100%
+- deterministic contract behavior preserved
+- no consensus authority added
+- no signing, broadcasting, or hidden execution authority added
+
+### v3.1.0 CI Proof
 
 ```text
 39 passed
