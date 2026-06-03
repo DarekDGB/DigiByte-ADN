@@ -1,105 +1,136 @@
-# ⚔️ ADN v3.1.0 — Active Defense Network
+# ⚔️ DigiByte ADN v3.2.0 — Active Defense Network
 
 ![ADN Tests](https://github.com/DarekDGB/DigiByte-ADN/actions/workflows/tests.yml/badge.svg)
 ![Coverage 100%](https://img.shields.io/badge/coverage-100%25-brightgreen)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![Status](https://img.shields.io/badge/status-ORCHESTRATOR--BOUNDARY--LOCKED-critical)
 
-### *Deterministic Local Defence Engine • Risk → Policy → Decision*
+**Deterministic Local Defence Engine • Risk → Policy → Decision Evidence**  
 **Architecture & Implementation by @DarekDGB — MIT Licensed**
 
 ---
 
-## 🚀 Purpose
+## Purpose
 
-**ADN v3.1.0 (Active Defense Network)** is the **deterministic local defense decision engine**
-of the **DigiByte Quantum Shield**.
+**ADN v3.2.0 — Active Defense Network** is the deterministic local defense decision engine of the **DigiByte Quantum Shield**.
+
+ADN converts validated defensive context into deterministic local policy decisions and provides structured decision evidence to the Shield stack.
 
 Where:
-- **Sentinel AI v3** detects anomalies and emits structured threat signals
-- **DQSN v3** validates, deduplicates, and aggregates those signals deterministically
 
-**ADN v3** is responsible for deciding **what a local environment is allowed to do**:
-node wrapper, RPC gateway, or wallet runtime.
+- **Sentinel AI v3** detects anomalies and emits structured threat signals.
+- **DQSN v3** validates, deduplicates, and aggregates those signals deterministically.
+- **ADN v3** evaluates local defense posture and produces deterministic decision evidence.
+- **Shield Orchestrator v3** is the only final Shield receipt boundary for AdamantineOS handoff.
 
-It operates using a **strict, testable, fail-closed contract**.
+ADN operates using a strict, testable, fail-closed contract.
 
-ADN:
-- does **not** modify DigiByte consensus rules
-- does **not** sign transactions
-- governs **local behaviour only**
+ADN does **not**:
+
+- modify DigiByte consensus rules
+- sign transactions
+- broadcast transactions
+- hold, derive, or access private keys
+- approve AdamantineOS execution directly
+- override the Shield Orchestrator
+
+ADN governs **local defensive behavior only**.
 
 ---
 
-## 🛡️ Position in the DigiByte Quantum Shield (v3)
+## Position in the DigiByte Quantum Shield
 
 ```text
- ┌───────────────────────────────────────────────┐
- │            Guardian Wallet                    │
- │   User-side defence rules & policies          │
- └───────────────────────────────────────────────┘
-                     ▲
-                     │   (policy recommendations)
- ┌───────────────────────────────────────────────┐
- │        Quantum Wallet Guard (QWG)             │
- │   Runtime tx / key safety enforcement         │
- └───────────────────────────────────────────────┘
-                     ▲
-                     │   (execution authority)
- ┌───────────────────────────────────────────────┐
- │                 ADN v3                        │
- │   Deterministic defence decision engine       │
- │   Risk → Policy → Enforcement intent          │
- └───────────────────────────────────────────────┘
-                     ▲
-                     │   (aggregated signals)
- ┌───────────────────────────────────────────────┐
- │               DQSN v3                         │
- │   Deterministic signal aggregation            │
- └───────────────────────────────────────────────┘
-                     ▲
-                     │   (raw threat signals)
- ┌───────────────────────────────────────────────┐
- │            Sentinel AI v3                     │
- │   Anomaly & threat detection                  │
- └───────────────────────────────────────────────┘
+┌───────────────────────────────────────────────┐
+│              AdamantineOS                     │
+│   Consumes only Shield Orchestrator receipt   │
+└───────────────────────────────────────────────┘
+                       ▲
+                       │ deterministic receipt only
+┌───────────────────────────────────────────────┐
+│          Shield Orchestrator v3               │
+│   Final Shield aggregation + receipt boundary │
+└───────────────────────────────────────────────┘
+                       ▲
+                       │ component verdict evidence
+┌───────────────────────────────────────────────┐
+│                 ADN v3                        │
+│   Deterministic local defence decision engine │
+│   Risk → Policy → Decision Evidence           │
+└───────────────────────────────────────────────┘
+                       ▲
+                       │ aggregated signals
+┌───────────────────────────────────────────────┐
+│               DQSN v3                         │
+│   Deterministic signal aggregation            │
+└───────────────────────────────────────────────┘
+                       ▲
+                       │ raw threat signals
+┌───────────────────────────────────────────────┐
+│            Sentinel AI v3                     │
+│   Anomaly and threat detection                │
+└───────────────────────────────────────────────┘
 ```
 
-ADN is the **decision authority** for local defence actions.
+ADN is an **evidence-producing defense component**.
+
+It is **not** the final AdamantineOS execution authority.
 
 ---
 
-## 🎯 Core Mission (v3)
+## Core Mission
 
-### ✓ Deterministic risk → decision
-- Convert aggregated signals into structured requests
-- Produce deterministic policy decisions
-  *(same inputs → same outputs)*
+### Deterministic Risk → Decision
 
-### ✓ Fail-closed by default
-- Unknown keys rejected
-- Invalid schema rejected
-- NaN / Infinity rejected anywhere
-- Oversized inputs rejected
-- Errors always explicit
+ADN converts validated defensive context into deterministic policy decisions.
 
-### ✓ Local enforcement intent
-- Map decisions into `NodeDefenseState`
-- Emit lockdown / warning / allow decisions
-- Provide structured evidence without leaking internals
+Same valid input must always produce the same output.
+
+### Fail-Closed by Default
+
+ADN rejects unsafe input conditions, including:
+
+- unknown keys
+- invalid schema
+- NaN / Infinity values
+- oversized inputs
+- unserialisable payloads
+- unsupported contract versions
+- ambiguous authority claims
+
+Errors must always be explicit and test-covered.
+
+### Local Enforcement Intent
+
+ADN may map decisions into local defense states, warnings, lockdown intent, or allow intent.
+
+This remains local defense behavior only.
+
+It does not create signing authority, consensus authority, or final execution authority.
+
+### Orchestrator-First Handoff
+
+For v3.2.0 integration, ADN verdict data is evidence only.
+
+AdamantineOS must consume Shield decisions only through the deterministic **Shield Orchestrator receipt**.
+
+Raw ADN outputs are not final execution authority.
 
 ---
 
-## 🧠 What “v3” means (important)
+## What v3 Means
 
-**ADN v3 separates contract from behaviour.**
+**ADN v3 separates contract from legacy behavior.**
 
-- `adn_v3` → **authoritative contract layer**
-- `adn_v2` → **legacy behaviour engine (still used)**
+- `adn_v3` is the authoritative v3 contract layer.
+- `adn_v2` is the legacy behavior engine and compatibility layer.
 
-This ensures:
-- zero behaviour drift
-- deterministic contract surface
-- future-safe upgrades
+This preserves:
+
+- deterministic contract safety
+- stable v3 imports
+- zero unintended behavior drift
+- future-safe Shield upgrades
 
 Public import:
 
@@ -109,7 +140,7 @@ from adn_v3 import ADNv3
 
 ---
 
-## 🧩 Repository Layout (authoritative)
+## Repository Layout
 
 ```text
 DigiByte-ADN/
@@ -117,100 +148,169 @@ DigiByte-ADN/
 ├─ LICENSE
 ├─ CONTRIBUTING.md
 ├─ CHANGELOG.md
+├─ SECURITY.md
 ├─ docs/
-│  ├─ v2/                  # legacy reference docs
-│  └─ v3/                  # authoritative v3 docs
+│  ├─ v2/                         # legacy reference docs
+│  └─ v3/                         # authoritative v3 docs
+│     ├─ ARCHITECTURE.md
+│     ├─ CONTRACT.md
+│     ├─ EVIDENCE_FAMILIES.md
+│     ├─ INDEX.md
+│     ├─ MANIFEST.md
+│     ├─ PROOF_PACK.md
+│     ├─ REASON_IDS.md
+│     └─ TEST_MATRIX.md
 ├─ tests/
-│  └─ test_v3_full_coverage_lock.py
+│  ├─ test_v3_full_coverage_lock.py
+│  └─ test_v3_2_manifest_verdict_lock.py
 └─ src/
-   ├─ adn_v3/               # v3 contract (authoritative)
+   ├─ adn_v3/                     # v3 contract boundary — authoritative
    │  ├─ core.py
    │  ├─ py.typed
    │  └─ contracts/
-   │     ├─ v3_types.py
+   │     ├─ v3_hash.py
    │     ├─ v3_reason_codes.py
-   │     └─ v3_hash.py
-   └─ adn_v2/               # legacy behaviour engine
+   │     ├─ v3_types.py
+   │     └─ v3_2_lock.py
+   └─ adn_v2/                     # legacy behavior engine
       ├─ engine.py
       ├─ models.py
       ├─ config.py
       ├─ py.typed
-      └─ v3.py              # deprecated shim → adn_v3
+      └─ v3.py                    # deprecated shim → adn_v3
 ```
 
 ---
 
-## 🧪 Tests & Security Guarantees
+## v3.2.0 Manifest / Verdict Lock
 
-- CI enforces **100% coverage on `adn_v3`**
-- Determinism tested explicitly
-- Fail-closed behaviour tested on invalid inputs
-- Legacy `adn_v2` remains packaged but is not the v3 coverage boundary
-- The authoritative v3 contract layer must remain fully covered
+ADN v3.2.0 includes the Shield manifest / registry / canonical verdict lock required before AdamantineOS integration.
 
-This ensures **contract safety without fake tests or uncovered v3 branches**.
+The v3.2.0 lock enforces:
 
-### v3.1.0 hardening status
+- component identity discipline
+- contract version discipline
+- stable reason ID registration
+- stable evidence-family registration
+- deterministic canonical verdict data
+- fail-closed rejection of malformed verdict inputs
+- Orchestrator-first handoff assumptions
 
-ADN is aligned with the Shield v3.1.0 hardening track:
+ADN remains evidence-only.
 
-- package metadata set to `3.1.0`
-- Active Defense Network naming corrected
-- `adn_v3` remains coverage-gated at 100%
-- deterministic contract behavior preserved
-- no consensus authority added
-- no signing, broadcasting, or hidden execution authority added
+It cannot:
 
-### v3.1.0 CI Proof
+- sign
+- broadcast
+- hold keys
+- expand authority
+- override the Shield Orchestrator
+- approve AdamantineOS execution directly
 
-```text
-39 passed
-172 statements
-0 missed
-100% coverage
-Required test coverage of 100% reached.
-```
+See:
+
+- `docs/v3/MANIFEST.md`
+- `docs/v3/REASON_IDS.md`
+- `docs/v3/EVIDENCE_FAMILIES.md`
+- `docs/v3/TEST_MATRIX.md`
+- `docs/v3/PROOF_PACK.md`
 
 ---
 
-## 🔒 Shield v3 Invariants
+## Tests & Security Guarantees
+
+CI enforces **100% coverage on `adn_v3`**.
+
+Security and regression tests enforce:
+
+- strict schema validation
+- fail-closed behavior
+- deterministic hashing
+- oversized input rejection
+- malformed input rejection
+- unsupported contract version rejection
+- reason-code stability
+- evidence-family stability
+- manifest/verdict alignment
+- no hidden authority
+- no silent fallback
+- v3.2.0 contract lock behavior
+
+Legacy `adn_v2` remains packaged but is not the authoritative v3 coverage boundary.
+
+Tests define truth.
+
+No release is locked unless CI proves the contract surface.
+
+---
+
+## v3.2.0 Status
+
+ADN is aligned with the Shield v3.2.0 integration-boundary track:
+
+- package metadata set to `3.2.0`
+- `adn_v3` remains the authoritative v3 contract boundary
+- `v3_2_lock.py` lives under `src/adn_v3/contracts/`
+- manifest / reason ID / evidence-family docs are present
+- v3.2.0 verdict lock tests are present
+- deterministic contract behavior is preserved
+- no consensus authority is added
+- no signing, broadcasting, key custody, or hidden execution authority is added
+- AdamantineOS must consume Shield through the Orchestrator receipt only
+
+Do **not** tag v3.2.0 until the final roadmap checklist, fresh ZIP audit, CI proof, and Red Team report are complete.
+
+---
+
+## Shield v3 Invariants
 
 ADN v3 follows the Shield v3 baseline invariants:
 
-- **Deny-by-default** — anything not explicitly allowed is rejected
-- **Fail-closed** — invalid, ambiguous, partial, or unsafe input is rejected
-- **Deterministic execution** — same valid input must produce the same output
-- **No silent fallback** — failures must surface as explicit reasoned rejections
-- **Contract-first behaviour** — the v3 interface is the authoritative safety boundary
-- **Local-only enforcement** — ADN never modifies consensus and never signs transactions
+- **Deny-by-default** — anything not explicitly allowed is rejected.
+- **Fail-closed** — invalid, ambiguous, partial, or unsafe input is rejected.
+- **Deterministic execution** — same valid input must produce the same output.
+- **No silent fallback** — failures must surface as explicit reasoned rejections.
+- **Contract-first behavior** — the v3 interface is the authoritative safety boundary.
+- **Local-only enforcement** — ADN never modifies consensus and never signs transactions.
+- **Orchestrator-first handoff** — AdamantineOS receives Shield state only through the deterministic Orchestrator receipt.
 
 Any violation of these invariants is a security defect.
 
 ---
 
-## 📚 Documentation
+## Documentation
 
-- **Start here:** `docs/v3/INDEX.md`
-- **Architecture:** `docs/v3/ARCHITECTURE.md`
-- **Contract:** `docs/v3/CONTRACT.md`
-- **Legacy reference:** `docs/v2/`
+- Start here: `docs/v3/INDEX.md`
+- Architecture: `docs/v3/ARCHITECTURE.md`
+- Contract: `docs/v3/CONTRACT.md`
+- Manifest: `docs/v3/MANIFEST.md`
+- Reason IDs: `docs/v3/REASON_IDS.md`
+- Evidence Families: `docs/v3/EVIDENCE_FAMILIES.md`
+- Test Matrix: `docs/v3/TEST_MATRIX.md`
+- Proof Pack: `docs/v3/PROOF_PACK.md`
+- Legacy reference: `docs/v2/`
 
 ---
 
-## 🤝 Contribution Policy
+## Contribution Policy
 
 See `CONTRIBUTING.md`.
 
 Rules:
-- No consensus-touching behaviour
-- Deterministic decisions only
-- Explicit enforcement outputs
-- Tests required for contract changes
-- No reduction of the `adn_v3` 100% coverage gate
+
+- No consensus-touching behavior.
+- No signing or broadcasting behavior.
+- No private-key custody behavior.
+- No AdamantineOS direct execution approval.
+- Deterministic decisions only.
+- Explicit enforcement outputs only.
+- Tests required for contract changes.
+- No reduction of the `adn_v3` 100% coverage gate.
+- No bypass of the Shield Orchestrator receipt boundary.
 
 ---
 
-## 📜 License
+## License
 
-MIT License
+MIT License  
 © 2025 **DarekDGB**
