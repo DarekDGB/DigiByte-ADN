@@ -134,4 +134,4 @@ V4.8G-R4 closes the audit cleanup items for component canonicalization drift by 
 - a KAT lock test that must reproduce signed payload hash `a3881f27444ce73de875a15c8b413785a4fec4f4c03baaa6f8ee2fbf839736ae`;
 - explicit proof that null and float mutations of the KAT payload fail before signing.
 
-The KAT is TEST-ONLY deterministic evidence. It is not production key material and does 
+The KAT is TEST-ONLY deterministic evidence. It is not production key material and does not claim live liboqs execution.
