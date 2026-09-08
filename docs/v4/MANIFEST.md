@@ -2,6 +2,13 @@
 
 Author attribution: DarekDGB
 
+## Distribution Status
+
+Distribution version: 4.0.0. Status: controlled pre-release candidate, not
+released or tagged. No runtime __version__ or server-version surface is added.
+The v3 compatibility manifest remains package_version 3.2.0 and contract_version 3.
+See [the proof pack](PROOF_PACK.md) and [release status](RELEASE_STATUS_v4.0.0.md).
+
 ## Component
 
 ```text
@@ -137,7 +144,10 @@ V4.8G adds:
 - optional backend-reported public-key/signature length enforcement before native verify;
 - `.github/workflows/shield-v4-real-oqs.yml` as an optional real-OQS proof harness.
 
-The gated workflow is not a hard dependency for normal CI. It becomes proof only when `SHIELD_V4_REAL_OQS=1` runs on a liboqs-enabled runner and the JUnit guard confirms the test did not skip.
+The gated workflow is not a dependency for ordinary CI. The current release
+gate requires both SHIELD_V4_REAL_OQS=1 and SHIELD_V4_REAL_OQS_FALCON=1, the two
+exact ML-DSA/Falcon-1024 nodes, and zero skips, failures, or errors. The earlier
+single-node V4.8G record is historical and cannot close the current gate.
 
 
 ## V4.8G-R4 Audit Cleanup
@@ -172,3 +182,13 @@ V4.8H-E adds:
 - a dedicated PQC workflow that runs both live ML-DSA and live Falcon-1024 proofs with the not-skipped JUnit guard.
 
 The H-E lock keeps FN-DSA optional. It does not upgrade FN-DSA to required policy, does not claim final FIPS 206 support, and does not let Falcon/FN-DSA override required `classical-ed25519` or `ml-dsa` failures.
+
+## Frozen Fixture File Hashes
+
+These are SHA-256 hashes of complete fixture files, distinct from the signed
+payload hash inside the component KAT. Both fixtures remain TEST-ONLY evidence.
+
+```text
+176d9d8f7d16be456f2bf783c3031b65c46fd5f9efed1aba89d216b98406b0ff  tests/fixtures/v4/component_verdict_policy_v1_kat.json
+b799b963cb46ccf579a0380cffeecd81f99fa616267e6d69fec4f2bf06e9f6ef  tests/fixtures/v4/fn_dsa_signed_message_draft_profile_kat.json
+```
