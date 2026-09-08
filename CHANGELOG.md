@@ -1,6 +1,16 @@
 # Changelog
 
-## v3.2.0 — Manifest / Verdict / Receipt Lock
+## v4.0.0 - Controlled pre-release candidate
+
+- Align distribution metadata to 4.0.0 and document the parallel Shield v4 evidence surface.
+- Publish the v4 proof pack, candidate release-status record, and release-pack locks.
+- Align current security and contribution guidance with evidence-only signing and Orchestrator-first handoff.
+- Preserve the frozen v3 manifest identity at 3.2.0 and contract version 3.
+- Preserve all runtime, workflow, schema, cryptographic policy, trust-profile, and fixture bytes.
+- Make all files in this release pack ASCII-safe for transfer.
+- This candidate is not released or tagged; exact-commit CI, native proof, fresh ZIP verification, and release authorization remain required.
+
+## v3.2.0 - Historical Manifest / Verdict / Receipt Lock
 
 - Added Shield v3.2.0 manifest documentation under `docs/v3/`.
 - Added reason ID and evidence family registries.
