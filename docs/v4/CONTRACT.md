@@ -6,6 +6,12 @@ Author attribution: DarekDGB
 
 This document defines the DigiByte ADN Shield v4 component-verdict contract.
 
+Distribution 4.0.0 is a controlled pre-release candidate, not a released or
+tagged artifact. See [the proof pack](PROOF_PACK.md) and
+[candidate release status](RELEASE_STATUS_v4.0.0.md).
+The package version does not change any protocol, schema, domain, or profile.
+The frozen v3 manifest remains package_version 3.2.0 and contract_version 3.
+
 This is a parallel v4 contract. It does not modify or replace the audited v3.2 DigiByte ADN deterministic contract.
 
 V4.8F-D adds a real ML-DSA backend adapter path for DigiByte ADN component evidence. The deterministic TEST-ONLY path remains separate and is retained only for contract and CI locking. V4.8H-C adds the component FN-DSA optional-evidence contract with authenticated `standard_profile` binding.
