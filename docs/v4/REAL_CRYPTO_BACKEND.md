@@ -6,6 +6,11 @@ Author attribution: DarekDGB
 
 This document locks the DigiByte ADN Shield v4 real-crypto backend boundary for component verdict evidence.
 
+Distribution 4.0.0 remains a controlled pre-release candidate. Both the ML-DSA-65
+and optional draft Falcon-1024 adapters are present. See [the proof pack](PROOF_PACK.md)
+for current exact-node gates and [release status](RELEASE_STATUS_v4.0.0.md) for
+pending release authorization. E5 changes no backend code or dependency.
+
 V4.8F-D introduces a deployment-controlled real ML-DSA adapter path for DigiByte ADN. It does not replace the deterministic TEST-ONLY signature path used by contract tests. V4.8H-C adds authenticated `standard_profile` binding and optional FN-DSA draft-profile evidence semantics. It does not make DigiByte ADN a transaction signer, broadcaster, consensus layer, wallet custody layer, or AdamantineOS final authority.
 
 ## Non-authority lock
@@ -53,7 +58,10 @@ DigiByte ADN exposes a backend-neutral adapter contract in:
 src/adn_v3/v4/real_crypto_backend.py
 ```
 
-The neutral adapter does not require a specific PQC library. Real deployments may connect liboqs, an HSM, a FIPS-validated module, or another reviewed backend through the same interface.
+The neutral adapter does not require a specific PQC library. Its interface
+allows reviewed backend implementations. The current repository provides OQS
+ML-DSA-65 and Falcon-1024 adapters; it does not provide HSM integration proof,
+a FIPS-validated deployment, or a production classical Ed25519 backend.
 
 The optional OQS ML-DSA backend lives in:
 
@@ -126,10 +134,15 @@ python -m pytest --override-ini addopts='' \
   tests/test_v48g_real_oqs_mldsa_backend.py \
   tests/test_v48h_e_real_oqs_falcon_backend.py \
   -q --junitxml=shield-v4-real-oqs-results.xml
-python scripts/assert_real_oqs_junit_not_skipped.py shield-v4-real-oqs-results.xml
+python scripts/assert_real_oqs_junit_not_skipped.py shield-v4-real-oqs-results.xml \
+  --min-tests 2 \
+  --require-testcase "tests/test_v48g_real_oqs_mldsa_backend.py::test_v48g_real_oqs_mldsa65_adn_backend_round_trip_and_negatives" \
+  --require-testcase "tests/test_v48h_e_real_oqs_falcon_backend.py::test_v48h_e_real_oqs_falcon1024_backend_round_trip_and_negatives"
 ```
 
-A public live Falcon-1024 claim requires that dedicated workflow to finish green with `skipped == 0`, `failures == 0`, and `errors == 0` for the guarded report.
+A public live Falcon-1024 claim requires the dedicated workflow to finish green
+on the claimed commit with exactly two required nodes, skipped=0, failures=0,
+and errors=0. These commands match the current gate in [TEST_MATRIX.md](TEST_MATRIX.md).
 
 ## Binary encoding lock
 
@@ -183,7 +196,8 @@ Missing OQS and disabled OQS mechanisms surface through `AdnV4RealCryptoBackendU
 
 ## Policy status
 
-This step adds the real ML-DSA path for DigiByte ADN. Shield v4 `policy.v1` still requires both:
+The current backend surface includes real ML-DSA and optional draft Falcon-1024.
+Shield v4 `policy.v1` still requires both:
 
 ```text
 classical-ed25519
@@ -193,7 +207,10 @@ ml-dsa
 A production real-backend deployment must satisfy both required paths. If optional FN-DSA is present, unsupported `standard_profile` values, wrong hashes, wrong domains, duplicate entries, wrong roles, or missing trust-profile keys fail closed. This DigiByte ADN OQS adapter alone does not downgrade policy.v1 and does not allow ML-DSA to replace the required classical path.
 
 
-## V4.8G gated real-liboqs proof
+## Historical V4.8G gated real-liboqs proof
+
+The single-node commands below describe the earlier V4.8G stage. Current E5
+proof must run the combined two-node gate above and in TEST_MATRIX.md.
 
 Default package CI proves the backend interface contract and fail-closed behavior using deterministic fake backends. It does not claim that live liboqs ML-DSA ran.
 
