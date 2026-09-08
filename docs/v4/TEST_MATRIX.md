@@ -4,7 +4,9 @@ Author attribution: DarekDGB
 
 ## Scope
 
-This matrix covers the DigiByte ADN Shield v4 component-verdict contract and the V4.8F-D real ML-DSA backend path.
+This matrix covers the DigiByte ADN Shield v4 component-verdict contract,
+ML-DSA-65 and optional draft Falcon-1024 adapters, canonical order, and the
+4.0.0 candidate release-pack locks. Runtime and workflow bytes are unchanged by E5.
 
 The goal is to prove DigiByte ADN can produce and verify v4 component evidence while keeping TEST-ONLY deterministic signatures separate from real backend mode.
 
@@ -91,7 +93,7 @@ pytest --cov=adn_v3 --cov-report=term-missing --cov-fail-under=100 -q
 ```
 
 
-## Optional Real-OQS Proof Gate
+## Required Release Real-OQS Proof Gate
 
 Default CI does not require liboqs. The live liboqs proof is a separate gated
 job that executes both required guarded nodes:
@@ -113,6 +115,10 @@ python scripts/assert_real_oqs_junit_not_skipped.py \
 The guard must prove that both exact testcase nodes ran and that `skipped == 0`,
 `failures == 0`, and `errors == 0` before the run can support a live-liboqs
 claim.
+
+Ordinary CI may skip the two native modules when their gates are unset. Those
+skips are not native proof. Standard and dedicated native workflows must both
+pass on the exact E5 commit before fresh ZIP verification closes the step.
 
 ## V4.8G-R4 Audit Cleanup Checks
 
@@ -176,6 +182,22 @@ A live Falcon-1024 claim requires the dedicated PQC workflow JUnit guard to repo
 
 ## Authority Boundary
 
-Passing these tests proves only the DigiByte ADN v4 component-verdict contract and DigiByte ADN real ML-DSA adapter boundary.
+Passing these tests provides evidence for the ADN v4 component-verdict contract
+and the exercised ML-DSA/Falcon-1024 adapter boundaries. Coverage applies to
+adn_v3, including adn_v3.v4; it is not a full legacy adn_v2 coverage claim.
 
 It does not grant transaction-signing authority, broadcast authority, DigiByte consensus authority, Shield Orchestrator final receipt authority, or AdamantineOS final authority.
+
+## V4.10-E5 Release-Pack Lock
+
+`tests/test_v410e5_release_pack_lock.py` checks distribution/compatibility
+version separation, frozen identities and algorithms, KAT file hashes,
+documentation links, candidate-only status, historical release wording, exact
+workflow node identities, bounded crypto/authority claims, repository text and
+attribution, and generated-output plus encoding-corruption regressions.
+
+The lock must work in a normal Git checkout after editable installation and
+with bytecode, pytest cache, and coverage output enabled. It rejects all C1
+controls and the tested Latin-1/cp1252 corruption patterns without treating untracked
+generated artifacts as repository source. Tracked generated artifacts fail.
+Every E5 package member is ASCII-safe; unchanged Unicode fixtures remain frozen.
