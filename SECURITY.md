@@ -1,31 +1,38 @@
-# Security Policy — DigiByte ADN
+# Security Policy - DigiByte ADN
 
-**Repository:** DigiByte-ADN  
-**Component:** ADN v3 — Active Defense Network  
-**Maintainer:** DarekDGB  
+**Repository:** DigiByte-ADN
+**Component:** ADN - Shield v4 candidate and retained v3 compatibility
+**Maintainer:** DarekDGB
 **License:** MIT
 
-This document defines the security policy and disclosure process for the DigiByte Active Defense Network, with a focus on the **ADN v3 Shield contract boundary**.
+This document defines the security policy and disclosure process for the
+DigiByte Active Defense Network's **Shield v4 evidence boundary and retained
+ADN v3 contract**.
 
 ---
 
 ## Supported Versions
 
-Only **ADN v3** is supported and security-maintained for new Shield work.
+Distribution 4.0.0 is a controlled pre-release candidate. New v4 evidence work
+uses `adn_v3.v4`; the existing v3 contract remains a separate compatibility surface.
 
 | Component | Status |
 |---|---|
-| ADN v3 (`adn_v3`) | ✅ Supported — current v3.2.0 integration-boundary hardening surface |
-| ADN v2 (`adn_v2`) | ⚠️ Legacy behavior engine only |
-| Older versions | ❌ Unsupported |
+| ADN v4 (`adn_v3.v4`) | Current controlled candidate evidence surface; not released |
+| ADN v3 (`adn_v3`) | Retained deterministic contract; frozen 3.2.0 manifest |
+| ADN v2 (`adn_v2`) | Legacy behavior engine and compatibility code |
+| Older versions | Unsupported |
 
-Legacy documentation may remain in the repository for historical reference, but it is **non-authoritative** for v3.2.0 security behavior.
+Legacy documentation may remain in the repository for historical reference, but it is **non-authoritative** for current v4 security claims.
 
 ---
 
 ## Security Model
 
-ADN v3 is a **deterministic, fail-closed local defense decision engine**.
+ADN's retained v3 engine provides deterministic, fail-closed local defense
+contracts. The parallel v4 surface produces and verifies component evidence.
+Canonical payloads are deterministic for explicit inputs; native key generation
+and signature bytes need not be deterministic.
 
 Security is enforced through:
 
@@ -37,14 +44,14 @@ Security is enforced through:
 - canonical context hashing
 - CI-enforced 100% coverage on the `adn_v3` surface
 
-ADN v3 is **consensus-neutral**.
+ADN remains **consensus-neutral**.
 
 It does not:
 
 - alter DigiByte consensus rules
 - sign transactions
 - broadcast transactions
-- hold, derive, or access private keys
+- hold, derive, or access wallet private keys
 - perform final wallet execution approval
 
 All ADN decisions affect **local defensive behavior only**, such as wallet wrappers, node wrappers, RPC-layer wrappers, policy gates, or Shield orchestration evidence.
@@ -69,11 +76,15 @@ Expected fail-closed behavior includes:
 
 ### 2. Determinism
 
-The same valid input must always produce the same output.
+The same explicit contract inputs must produce the same canonical decision
+and payload. Native signature bytes are not subject to that determinism claim.
+V4 freshness fields are supplied explicitly and bound by signatures. Verifiers
+must apply their time, policy, and replay state; the payload alone is not an
+independent replay store.
 
-Contract decisions must not depend on:
+Contract decisions must not implicitly depend on:
 
-- timestamps
+- ambient wall-clock reads
 - randomness
 - environment state
 - network state
@@ -91,10 +102,11 @@ ADN may:
 - evaluate local risk context
 - produce deterministic decision evidence
 - provide evidence to the Shield Orchestrator
+- sign v4 component evidence using separately supplied evidence keys
 
 ADN must never:
 
-- execute cryptographic signing
+- sign transactions
 - modify consensus behavior
 - perform network I/O inside the contract surface
 - approve AdamantineOS execution directly
@@ -115,9 +127,10 @@ Legacy `adn_v2` is not the authoritative v3 security surface.
 
 ---
 
-## v3.2.0 Security Boundary
+## Orchestrator-First Security Boundary
 
-The v3.2.0 boundary locks ADN into the Shield manifest / verdict / receipt upgrade path.
+The retained v3.2.0 manifest and parallel v4 evidence path both preserve the
+Shield component / Orchestrator receipt / AdamantineOS boundary.
 
 ADN component verdicts are **evidence only**.
 
@@ -132,6 +145,19 @@ A Shield `ALLOW` result only permits AdamantineOS to continue its own checks.
 It is **not** final signing or execution approval.
 
 ---
+
+## V4 Cryptographic Policy and Limits
+
+The required `classical-ed25519` and `ml-dsa` paths use strict AND semantics.
+The optional `fn-dsa` path stays last in canonical order, cannot replace or
+rescue required evidence, and is fatal when present but invalid. Profile, role,
+domain, key, and signed-payload bindings remain mandatory.
+
+OQS adapters provide ML-DSA-65 and draft Falcon-1024 backend paths for evidence.
+This repository does not supply a production classical Ed25519 backend, an
+HSM integration proof, or a FIPS-validated deployment. A production deployment
+must satisfy every required policy path. No real-to-TEST-ONLY fallback is allowed.
+The profile `fips206-draft-falcon1024-v1` is not a final FIPS 206 claim.
 
 ## Fail-Closed Requirements
 
@@ -154,7 +180,7 @@ The following conditions must reject deterministically:
 
 ## Security Testing
 
-Security guarantees are enforced through tests covering:
+The suite checks contract behavior through tests covering:
 
 - schema validation
 - fail-closed behavior
@@ -178,10 +204,13 @@ Documentation must never claim behavior that tests do not enforce.
 
 ## Release Requirements
 
-No ADN v3.2.0 release should be tagged unless all of the following are true:
+The `v4.0.0` candidate is not released or tagged. Current status is recorded in
+[the v4 release-status document](docs/v4/RELEASE_STATUS_v4.0.0.md).
+A release decision requires all of the following:
 
 - roadmap checklist is complete
-- tests pass locally or in CI
+- standard CI passes on the exact release-candidate commit
+- dedicated native-OQS proof runs both locked nodes with zero skips, failures, or errors on that same commit
 - CI coverage gate remains at 100%
 - manifest files are present and aligned
 - reason IDs are documented and tested
@@ -219,7 +248,7 @@ Coordinated disclosure is strongly encouraged.
 
 Security issues in scope include:
 
-- ADN v3 contract behavior
+- ADN v4 evidence and retained v3 contract behavior
 - determinism violations
 - fail-closed bypasses
 - reason ID ambiguity
@@ -278,4 +307,4 @@ Use at your own risk.
 
 Any change that weakens determinism, fail-closed behavior, explicit authority boundaries, or the Orchestrator-first receipt model must be rejected.
 
-© 2025 DarekDGB
+Copyright (c) 2025 DarekDGB
