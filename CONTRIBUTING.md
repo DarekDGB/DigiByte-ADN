@@ -1,130 +1,79 @@
-# Contributing to ADN v2 (Active Defence Network)
+# Contributing to DigiByte ADN - Active Defense Network
 
-**ADN v2** is the **Active Defence Network** layer in the DigiByte Quantum Shield.
+Author attribution: DarekDGB
 
-It consumes signals from **DQSN v2** and **Sentinel AI v2**, then coordinates
-defensive *recommendations* and *tactical responses* for higher layers such as:
+Distribution 4.0.0 is a controlled pre-release candidate. Current Shield v4
+evidence primitives live in `adn_v3.v4`; the retained v3 contract remains in
+`adn_v3`, with legacy behavior and compatibility under `adn_v2`.
 
-- Quantum Wallet Guard (QWG)
-- Guardian Wallet
-- Node operators and tooling
+## Welcome Contributions
 
-ADN is **advisory and orchestration only**.  
-It does **not** change DigiByte consensus, rules, or block validity.
+- Contract and documentation corrections grounded in executable behavior.
+- Deterministic defensive decision logic and explicit fail-closed errors.
+- Negative tests for malformed evidence, policy failures, and authority bypasses.
+- Reviewed improvements to backend adapters, performance, and integration examples.
+- Clear descriptions of limitations and reproducible proof commands.
 
-This repository is a **reference architecture & implementation skeleton** for
-DigiByte Core developers and security researchers.
+ADN provides local defensive evidence. Cross-repository deployment wiring,
+transaction execution, and broader protection claims require their own
+implementation and proof; documentation must not imply they already exist.
 
----
+## Required Boundaries
 
-## ✅ What Contributions Are Welcome
+- Do not change DigiByte consensus, block validity, or fork choice.
+- Do not sign or broadcast transactions, take wallet-key custody, or grant
+  direct AdamantineOS execution approval.
+- V4 signatures prove component evidence only, with separate evidence keys.
+- Preserve Orchestrator-first receipt handoff. AdamantineOS remains the final
+  fail-closed policy and execution boundary.
+- Keep required classical Ed25519 and ML-DSA paths under strict AND semantics.
+- Optional draft Falcon-1024 evidence stays last and cannot replace or rescue
+  a failed or missing required signature. Present-invalid evidence is fatal.
+- Do not reinterpret draft Falcon signatures as final FIPS 206 signatures.
+- Do not fall back from real backend mode to deterministic TEST-ONLY signatures.
 
-### ✔️ Extensions & Improvements
+## Compatibility and Determinism
 
-- New defence playbooks and strategies (e.g. how to react to certain threats)
-- Improved risk aggregation and prioritisation logic
-- Better routing of signals to different consumer types (nodes, wallets, services)
-- Performance, reliability, and robustness improvements
-- Additional simulation scenarios and test harnesses
-- Documentation clarifications and diagrams
+Preserve the frozen v3 manifest at package_version 3.2.0 and contract_version 3.
+The distribution version is a separate surface. Do not rename legacy imports
+or change frozen v4 schema, domain, policy, profile, role, or KAT bytes as part
+of a release-document alignment.
 
-### ✔️ Security & Reliability Fixes
+Canonical payloads and contract decisions must be reproducible for explicit
+inputs. Native key generation and signature bytes are not required to be
+deterministic. Keep environmental behavior outside the deterministic contract.
 
-- Hardening of decision logic
-- More deterministic behaviour
-- Better error handling and fallback strategies
-- Improved logging and audit traces
+## Pull Request Expectations
 
----
+Explain the problem, the resulting behavior, the exact file scope, and the
+evidence for each security claim. Read existing documents before editing,
+preserve relevant history, and update tests when contract behavior changes.
 
-## ❌ What Will Not Be Accepted
+Run the standard Python 3.11 gate:
 
-### 🚫 Removing or weakening core architecture
+```sh
+python -m pip install -e ".[test]"
+python -m pytest --cov=adn_v3 --cov-report=term-missing --cov-fail-under=100 -q
+```
 
-ADN v2 has clearly defined responsibilities:
+The 100% coverage boundary is `adn_v3`, including the v4 subpackage.
+Legacy `adn_v2` is packaged but is not included in that coverage claim.
 
-- Consume signals from **DQSN v2** and **Sentinel AI v2**
-- Fuse and prioritise risk
-- Select appropriate defensive playbooks
-- Emit *recommendations* and *signals* to higher layers
+For release proof, also require the dedicated native-OQS workflow's two exact
+nodes with zero skips, failures, or errors on the same commit. Ordinary
+native-module skips are expected without liboqs and are not native proof.
+See [the proof pack](docs/v4/PROOF_PACK.md) for the exact gate.
 
-Any PR that:
+Use ASCII-safe release-pack files, strict UTF-8/NFC/LF repository text, and
+escaped Unicode in new test probes. Do not include generated caches, bytecode,
+coverage databases, build metadata, or native library checkouts in copy packages.
+First-party author attribution is DarekDGB only; preserve third-party notices.
 
-- removes core modules or planes
-- attempts to collapse ADN into another layer
-- downgrades it to a trivial “if/else” wrapper
-- strips out key functionality (e.g. playbook engine, signal router)
+DarekDGB reviews architecture and release scope. A prepared package or green
+local run does not authorize a release tag. The controlled roadmap requires
+same-commit CI, native proof, fresh ZIP verification, and a release decision.
 
-…will be rejected.
+## License
 
-### 🚫 Consensus or Governance Changes
-
-ADN v2 **must not**:
-
-- modify DigiByte’s consensus rules
-- enforce or veto blocks
-- participate in fork choice
-- become a voting or governance layer
-
-ADN is **advisory**. It recommends; it does not rule.
-
-### 🚫 Black-Box Behaviour
-
-Avoid:
-
-- opaque ML models with no explainability
-- behaviour that cannot be traced, logged, or audited
-- hidden thresholds that operators cannot reason about
-
-All actions and decisions must remain understandable to humans.
-
----
-
-## 🧱 Design Principles
-
-All contributions should respect these principles:
-
-1. **Advisory, Not Authoritarian**  
-   ADN recommends tactics; it never forces network behaviour.
-
-2. **Explainability**  
-   For any decision, there should be a clear “why” available in logs or traces.
-
-3. **Composability**  
-   New playbooks and strategies should plug into existing dispatch and routing logic cleanly.
-
-4. **Determinism Where Possible**  
-   Given the same inputs, ADN should behave predictably.
-
-5. **Auditability**  
-   Security teams and operators must be able to reconstruct how a decision was made.
-
-6. **Interoperability**  
-   Outputs must remain useful to QWG, Guardian Wallet, node tooling, and external dashboards.
-
----
-
-## 🔄 Pull Request Expectations
-
-A PR should include:
-
-- A clear description of *what* is being added or changed
-- Motivation: *why* this improves ADN
-- Tests where appropriate (unit / simulation / integration)
-- No breaking folder structure without strong justification
-- No removal of core architectural components
-
-The original architect (@DarekDGB) reviews **direction and architectural fit**.  
-DigiByte developers and contributors review **technical implementation details**.
-
-If you are unsure whether a change fits the vision, open an issue first and
-discuss the concept before submitting a PR.
-
----
-
-## 📝 License
-
-By contributing, you agree that your contributions are licensed under the
-MIT License, the same as the rest of the project.
-
-© 2025 **DarekDGB**
+Contributions use the repository's MIT License.
+Copyright (c) 2025 DarekDGB.
