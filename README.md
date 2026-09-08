@@ -1,316 +1,170 @@
-# ⚔️ DigiByte ADN v3.2.0 — Active Defense Network
+# DigiByte ADN v4.0.0 - Active Defense Network
 
 ![ADN Tests](https://github.com/DarekDGB/DigiByte-ADN/actions/workflows/tests.yml/badge.svg)
 ![Coverage 100%](https://img.shields.io/badge/coverage-100%25-brightgreen)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
-![Status](https://img.shields.io/badge/status-ORCHESTRATOR--BOUNDARY--LOCKED-critical)
 
-**Deterministic Local Defence Engine • Risk → Policy → Decision Evidence**  
-**Architecture & Implementation by @DarekDGB — MIT Licensed**
+Author attribution: DarekDGB
 
----
+Status: controlled pre-release; not released and not tagged.
 
 ## Purpose
 
-**ADN v3.2.0 — Active Defense Network** is the deterministic local defense decision engine of the **DigiByte Quantum Shield**.
+DigiByte Active Defense Network (ADN) produces local defense decision evidence
+for the DigiByte Quantum Shield. Distribution version 4.0.0 includes the
+parallel Shield v4 evidence contract and the retained deterministic v3 contract.
 
-ADN converts validated defensive context into deterministic local policy decisions and provides structured decision evidence to the Shield stack.
-
-Where:
-
-- **Sentinel AI v3** detects anomalies and emits structured threat signals.
-- **DQSN v3** validates, deduplicates, and aggregates those signals deterministically.
-- **ADN v3** evaluates local defense posture and produces deterministic decision evidence.
-- **Shield Orchestrator v3** is the only final Shield receipt boundary for AdamantineOS handoff.
-
-ADN operates using a strict, testable, fail-closed contract.
-
-ADN does **not**:
-
-- modify DigiByte consensus rules
-- sign transactions
-- broadcast transactions
-- hold, derive, or access private keys
-- approve AdamantineOS execution directly
-- override the Shield Orchestrator
-
-ADN governs **local defensive behavior only**.
-
----
+The v4 primitives build and verify component verdict evidence. They do not
+automatically turn a legacy telemetry handler into a signed v4 endpoint or
+establish a deployed cross-repository integration.
 
 ## Position in the DigiByte Quantum Shield
 
-```text
-┌───────────────────────────────────────────────┐
-│              AdamantineOS                     │
-│   Consumes only Shield Orchestrator receipt   │
-└───────────────────────────────────────────────┘
-                       ▲
-                       │ deterministic receipt only
-┌───────────────────────────────────────────────┐
-│          Shield Orchestrator v3               │
-│   Final Shield aggregation + receipt boundary │
-└───────────────────────────────────────────────┘
-                       ▲
-                       │ component verdict evidence
-┌───────────────────────────────────────────────┐
-│                 ADN v3                        │
-│   Deterministic local defence decision engine │
-│   Risk → Policy → Decision Evidence           │
-└───────────────────────────────────────────────┘
-                       ▲
-                       │ aggregated signals
-┌───────────────────────────────────────────────┐
-│               DQSN v3                         │
-│   Deterministic signal aggregation            │
-└───────────────────────────────────────────────┘
-                       ▲
-                       │ raw threat signals
-┌───────────────────────────────────────────────┐
-│            Sentinel AI v3                     │
-│   Anomaly and threat detection                │
-└───────────────────────────────────────────────┘
-```
+| Component | Responsibility in the Shield evidence path |
+|---|---|
+| Sentinel AI | Threat-signal evidence |
+| DQSN | Network-signal evidence and deterministic aggregation |
+| ADN | Local defense decision evidence |
+| Shield Orchestrator | Verifies component evidence and produces the Shield receipt |
+| AdamantineOS | Independently verifies the receipt and applies final fail-closed policy and execution checks |
 
-ADN is an **evidence-producing defense component**.
+Raw ADN output is not final execution authority. AdamantineOS consumes Shield
+through the Orchestrator receipt. A Shield ALLOW permits further AdamantineOS
+checks; it does not approve signing or execution.
 
-It is **not** the final AdamantineOS execution authority.
-
----
+ADN cannot sign or broadcast transactions, change DigiByte consensus, hold
+wallet keys, override the Orchestrator, or approve AdamantineOS execution.
+V4 component-evidence signatures use separately supplied evidence keys;
+they do not grant transaction-signing or custody authority.
 
 ## Core Mission
 
-### Deterministic Risk → Decision
+ADN evaluates validated local defensive context and produces decision evidence.
+The retained v3 contract rejects unknown fields, unsupported versions,
+malformed or oversized requests, and invalid numeric values with explicit
+fail-closed results. V4 signed payloads bind context, request, decision,
+freshness fields, policy, and registry version.
 
-ADN converts validated defensive context into deterministic policy decisions.
+Canonical payloads and contract decisions are deterministic for explicit
+inputs. Native key generation and signature bytes need not be deterministic.
+Freshness and replay enforcement require the verifier's policy, time, and
+replay state; signed fields alone do not provide a global replay store.
 
-Same valid input must always produce the same output.
+Local defense states and recommendations remain evidence or local intent.
+They do not become network-wide enforcement or final execution authority.
 
-### Fail-Closed by Default
+## Shield v4 Contract and Policy
 
-ADN rejects unsafe input conditions, including:
+The parallel implementation is `adn_v3.v4`.
 
-- unknown keys
-- invalid schema
-- NaN / Infinity values
-- oversized inputs
-- unserialisable payloads
-- unsupported contract versions
-- ambiguous authority claims
+| Identity | Frozen value |
+|---|---|
+| Component | `adn` |
+| Role | `shield_component_adn` |
+| Contract | `4` |
+| Verdict schema | `shield.verdict.v2` |
+| Canonicalization | `shield-v4-canon.v1` |
+| Signature policy | `policy.v1` |
 
-Errors must always be explicit and test-covered.
+Required signatures are `classical-ed25519` and `ml-dsa`, with strict AND
+semantics. Optional `fn-dsa` evidence must be last. A verifier rejects
+noncanonical order before trust lookup or cryptographic verification.
+Present-invalid optional evidence is fatal; valid optional evidence cannot
+replace or rescue either required signature.
 
-### Local Enforcement Intent
+ML-DSA is formerly CRYSTALS-Dilithium. The OQS adapter uses ML-DSA-65.
+FN-DSA is based on Falcon; this repository's Falcon-1024 evidence uses
+`fips206-draft-falcon1024-v1`, not a final FIPS 206 profile.
 
-ADN may map decisions into local defense states, warnings, lockdown intent, or allow intent.
+The deterministic TEST-ONLY signature path is a contract fixture mechanism.
+The deployment-controlled OQS adapters provide real ML-DSA and Falcon-1024
+backend paths. This repository does not supply a production classical Ed25519
+backend, HSM integration proof, or FIPS-validated deployment. All required
+policy paths must still be satisfied by any real deployment.
 
-This remains local defense behavior only.
+## Retained v3 Compatibility
 
-It does not create signing authority, consensus authority, or final execution authority.
+`adn_v3` remains the authoritative implementation of the retained v3 contract.
+`adn_v2` remains the legacy behavior and compatibility package. Their runtime
+bytes are unchanged by this release-pack alignment.
 
-### Orchestrator-First Handoff
-
-For v3.2.0 integration, ADN verdict data is evidence only.
-
-AdamantineOS must consume Shield decisions only through the deterministic **Shield Orchestrator receipt**.
-
-Raw ADN outputs are not final execution authority.
-
----
-
-## What v3 Means
-
-**ADN v3 separates contract from legacy behavior.**
-
-- `adn_v3` is the authoritative v3 contract layer.
-- `adn_v2` is the legacy behavior engine and compatibility layer.
-
-This preserves:
-
-- deterministic contract safety
-- stable v3 imports
-- zero unintended behavior drift
-- future-safe Shield upgrades
-
-Public import:
+Public v3 import remains:
 
 ```python
 from adn_v3 import ADNv3
+
+engine = ADNv3()
+# engine.evaluate(request_dict) accepts the retained contract_version 3 schema.
 ```
 
----
+The frozen v3 manifest continues to declare `package_version: 3.2.0`,
+`contract_version: 3`, and `shield.verdict.v1`. These compatibility identities
+do not track the current distribution version. No runtime `__version__`
+attribute or server-version surface is introduced by E5.
+
+The retained v3 rules include explicit rejection, stable reason IDs and
+evidence families, deterministic context hashing, and Orchestrator-first
+handoff. V3 history is not a pending instruction to create or move a v3 tag.
 
 ## Repository Layout
 
-```text
-DigiByte-ADN/
-├─ README.md
-├─ LICENSE
-├─ CONTRIBUTING.md
-├─ CHANGELOG.md
-├─ SECURITY.md
-├─ docs/
-│  ├─ v2/                         # legacy reference docs
-│  └─ v3/                         # authoritative v3 docs
-│     ├─ ARCHITECTURE.md
-│     ├─ CONTRACT.md
-│     ├─ EVIDENCE_FAMILIES.md
-│     ├─ INDEX.md
-│     ├─ MANIFEST.md
-│     ├─ PROOF_PACK.md
-│     ├─ REASON_IDS.md
-│     └─ TEST_MATRIX.md
-├─ tests/
-│  ├─ test_v3_full_coverage_lock.py
-│  └─ test_v3_2_manifest_verdict_lock.py
-└─ src/
-   ├─ adn_v3/                     # v3 contract boundary — authoritative
-   │  ├─ core.py
-   │  ├─ py.typed
-   │  └─ contracts/
-   │     ├─ v3_hash.py
-   │     ├─ v3_reason_codes.py
-   │     ├─ v3_types.py
-   │     └─ v3_2_lock.py
-   └─ adn_v2/                     # legacy behavior engine
-      ├─ engine.py
-      ├─ models.py
-      ├─ config.py
-      ├─ py.typed
-      └─ v3.py                    # deprecated shim → adn_v3
+| Path | Purpose |
+|---|---|
+| `src/adn_v3/v4/` | Parallel v4 component evidence, trust, and crypto adapter primitives |
+| `src/adn_v3/contracts/` | Retained v3 contracts and frozen manifest |
+| `src/adn_v3/core.py` | Retained v3 request boundary |
+| `src/adn_v2/` | Legacy behavior and compatibility code |
+| `docs/v4/` | Current v4 contract, proof, and candidate release documents |
+| `docs/v3/` | Retained v3 normative and historical documents |
+| `docs/v2/` | Legacy reference documents |
+| `tests/` | Contract, regression, release, and gated native-proof tests |
+
+## Tests and Release Gates
+
+Install and run the standard gate on Python 3.11:
+
+```sh
+python -m pip install -e ".[test]"
+python -m pytest --cov=adn_v3 --cov-report=term-missing --cov-fail-under=100 -q
 ```
 
----
+Coverage is enforced at 100% for `adn_v3`, including `adn_v3.v4`.
+It is not a claim of 100% coverage for the legacy `adn_v2` package.
 
-## v3.2.0 Manifest / Verdict Lock
+Ordinary tests use deterministic contract fixtures and fake crypto backends.
+The two native-OQS modules skip unless their explicit gates are enabled.
+Those ordinary skips do not count as native proof.
 
-ADN v3.2.0 includes the Shield manifest / registry / canonical verdict lock required before AdamantineOS integration.
-
-The v3.2.0 lock enforces:
-
-- component identity discipline
-- contract version discipline
-- stable reason ID registration
-- stable evidence-family registration
-- deterministic canonical verdict data
-- fail-closed rejection of malformed verdict inputs
-- Orchestrator-first handoff assumptions
-
-ADN remains evidence-only.
-
-It cannot:
-
-- sign
-- broadcast
-- hold keys
-- expand authority
-- override the Shield Orchestrator
-- approve AdamantineOS execution directly
-
-See:
-
-- `docs/v3/MANIFEST.md`
-- `docs/v3/REASON_IDS.md`
-- `docs/v3/EVIDENCE_FAMILIES.md`
-- `docs/v3/TEST_MATRIX.md`
-- `docs/v3/PROOF_PACK.md`
-
----
-
-## Tests & Security Guarantees
-
-CI enforces **100% coverage on `adn_v3`**.
-
-Security and regression tests enforce:
-
-- strict schema validation
-- fail-closed behavior
-- deterministic hashing
-- oversized input rejection
-- malformed input rejection
-- unsupported contract version rejection
-- reason-code stability
-- evidence-family stability
-- manifest/verdict alignment
-- no hidden authority
-- no silent fallback
-- v3.2.0 contract lock behavior
-
-Legacy `adn_v2` remains packaged but is not the authoritative v3 coverage boundary.
-
-Tests define truth.
-
-No release is locked unless CI proves the contract surface.
-
----
-
-## v3.2.0 Status
-
-ADN is aligned with the Shield v3.2.0 integration-boundary track:
-
-- package metadata set to `3.2.0`
-- `adn_v3` remains the authoritative v3 contract boundary
-- `v3_2_lock.py` lives under `src/adn_v3/contracts/`
-- manifest / reason ID / evidence-family docs are present
-- v3.2.0 verdict lock tests are present
-- deterministic contract behavior is preserved
-- no consensus authority is added
-- no signing, broadcasting, key custody, or hidden execution authority is added
-- AdamantineOS must consume Shield through the Orchestrator receipt only
-
-Do **not** tag v3.2.0 until the final roadmap checklist, fresh ZIP audit, CI proof, and Red Team report are complete.
-
----
-
-## Shield v3 Invariants
-
-ADN v3 follows the Shield v3 baseline invariants:
-
-- **Deny-by-default** — anything not explicitly allowed is rejected.
-- **Fail-closed** — invalid, ambiguous, partial, or unsafe input is rejected.
-- **Deterministic execution** — same valid input must produce the same output.
-- **No silent fallback** — failures must surface as explicit reasoned rejections.
-- **Contract-first behavior** — the v3 interface is the authoritative safety boundary.
-- **Local-only enforcement** — ADN never modifies consensus and never signs transactions.
-- **Orchestrator-first handoff** — AdamantineOS receives Shield state only through the deterministic Orchestrator receipt.
-
-Any violation of these invariants is a security defect.
-
----
+The dedicated `Shield v4 Real OQS ML-DSA and Falcon-1024 Proof` workflow must
+run the exact two locked tests with zero skips, failures, or errors.
+Standard CI and dedicated native proof must be green on the final E5 commit,
+followed by fresh ZIP verification. Package preparation alone does not close E5
+or authorize `v4.0.0`. See the release-status record for remaining gates.
 
 ## Documentation
 
-- Start here: `docs/v3/INDEX.md`
-- Architecture: `docs/v3/ARCHITECTURE.md`
-- Contract: `docs/v3/CONTRACT.md`
-- Manifest: `docs/v3/MANIFEST.md`
-- Reason IDs: `docs/v3/REASON_IDS.md`
-- Evidence Families: `docs/v3/EVIDENCE_FAMILIES.md`
-- Test Matrix: `docs/v3/TEST_MATRIX.md`
-- Proof Pack: `docs/v3/PROOF_PACK.md`
-- Legacy reference: `docs/v2/`
-
----
+- [V4 contract](docs/v4/CONTRACT.md)
+- [V4 manifest](docs/v4/MANIFEST.md)
+- [V4 real crypto backend](docs/v4/REAL_CRYPTO_BACKEND.md)
+- [V4 test matrix](docs/v4/TEST_MATRIX.md)
+- [V4 proof pack](docs/v4/PROOF_PACK.md)
+- [V4.0.0 candidate release status](docs/v4/RELEASE_STATUS_v4.0.0.md)
+- [Retained v3 index](docs/v3/INDEX.md)
+- [Retained v3 manifest](docs/v3/MANIFEST.md)
+- [V3 reason IDs](docs/v3/REASON_IDS.md)
+- [V3 evidence families](docs/v3/EVIDENCE_FAMILIES.md)
+- [V3 test matrix](docs/v3/TEST_MATRIX.md)
+- [Historical v3 proof pack](docs/v3/PROOF_PACK.md)
+- [Security policy](SECURITY.md)
+- [Third-party notices](THIRD_PARTY_NOTICES.md)
 
 ## Contribution Policy
 
-See `CONTRIBUTING.md`.
-
-Rules:
-
-- No consensus-touching behavior.
-- No signing or broadcasting behavior.
-- No private-key custody behavior.
-- No AdamantineOS direct execution approval.
-- Deterministic decisions only.
-- Explicit enforcement outputs only.
-- Tests required for contract changes.
-- No reduction of the `adn_v3` 100% coverage gate.
-- No bypass of the Shield Orchestrator receipt boundary.
-
----
+See [CONTRIBUTING.md](CONTRIBUTING.md). Preserve deterministic contracts,
+fail-closed behavior, frozen compatibility identities, and the 100% coverage
+gate. Evidence signing must remain distinct from transaction signing.
+First-party author attribution is DarekDGB only.
 
 ## License
 
-MIT License  
-© 2025 **DarekDGB**
+MIT License. Copyright (c) 2025 DarekDGB.
